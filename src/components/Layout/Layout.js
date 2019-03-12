@@ -62,7 +62,7 @@ class Layout extends React.Component {
       <div className={s.root}>
         <Sidebar />
         <div
-          className={cx(s.wrap, {[s.sidebarOpen]: this.state.sidebarOpen})}
+          className={cx(s.wrap, { [s.sidebarOpen]: this.state.sidebarOpen })}
         >
           <Header
             sidebarToggle={() =>
@@ -77,13 +77,40 @@ class Layout extends React.Component {
               <Route path="/app/posts" component={PostsBundle} />
               <Route path="/app/privacy" exact component={PrivacyBundle} />
               <Route path="/app/profile" exact component={ProfileBundle} />
-              <Route path="/app/typography" exact component={TypographyBundle} />
+              <Route
+                path="/app/typography"
+                exact
+                component={TypographyBundle}
+              />
               <Route path="/app/tables" exact component={TablesBundle} />
-              <Route path="/app/notifications" exact component={NotificationsBundle} />
-              <Route path="/app/components/buttons" exact component={ButtonsBundle} />
-              <Route path="/app/components/charts" exact component={ChartsBundle} />
-              <Route path="/app/components/icons" exact component={IconsBundle} />
+              <Route
+                path="/app/notifications"
+                exact
+                component={NotificationsBundle}
+              />
+              <Route
+                path="/app/components/buttons"
+                exact
+                component={ButtonsBundle}
+              />
+              <Route
+                path="/app/components/charts"
+                exact
+                component={ChartsBundle}
+              />
+              <Route
+                path="/app/components/icons"
+                exact
+                component={IconsBundle}
+              />
               <Route path="/app/components/maps" exact component={MapsBundle} />
+              <Route
+                path="/app/my-orders"
+                exact
+                render={() => <p>My orders</p>}
+              />
+              <Route path="/app/order" exact render={() => <p>Order</p>} />
+              <Route path="/app/balance" exact render={() => <p>Balance</p>} />
               <Route component={NotFoundBundle} />
             </Switch>
           </main>

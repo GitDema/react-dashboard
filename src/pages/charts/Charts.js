@@ -24,7 +24,6 @@ export default class Charts extends PureComponent {
     return(
       <div>
         <Breadcrumb>
-          <BreadcrumbItem>YOU ARE HERE</BreadcrumbItem>
           <BreadcrumbItem active>Charts</BreadcrumbItem>
         </Breadcrumb>
         <h1 className="page-title mb-lg">Pretty <span className="fw-semi-bold">Charts</span></h1>

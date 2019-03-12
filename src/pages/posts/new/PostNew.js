@@ -48,15 +48,15 @@ class PostNew extends React.Component {
     };
   }
 
-  changeTitle = (event) => {
-    this.setState({title: event.target.value});
-  }
+  changeTitle = event => {
+    this.setState({ title: event.target.value });
+  };
 
-  changeContent = (event) => {
-    this.setState({content: event.target.value});
-  }
+  changeContent = event => {
+    this.setState({ content: event.target.value });
+  };
 
-  doCreatePost = (e) => {
+  doCreatePost = e => {
     this.props
       .dispatch(
         createPost({
@@ -71,13 +71,12 @@ class PostNew extends React.Component {
         }),
       );
     e.preventDefault();
-  }
+  };
 
   render() {
     return (
       <div className={s.root}>
-         <Breadcrumb>
-          <BreadcrumbItem>YOU ARE HERE</BreadcrumbItem>
+        <Breadcrumb>
           <BreadcrumbItem active>New Post</BreadcrumbItem>
         </Breadcrumb>
         <h1>Create new post</h1>

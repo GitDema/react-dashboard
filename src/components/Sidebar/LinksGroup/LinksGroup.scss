@@ -23,7 +23,7 @@
 
     &:hover {
       font-weight: $font-weight-thin;
-      background-color: $gray-100;
+      background-color: $accent-bg;
     }
 
     img {
@@ -45,7 +45,7 @@
 
 .headerLinkActive {
   span {
-    color: $brand-danger;
+    color: $brand-primary;
     font-weight: $font-weight-semi-bold;
   }
 }

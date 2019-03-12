@@ -11,7 +11,6 @@ import Widget from '../../components/Widget';
 const Typography = () => (
   <div>
     <Breadcrumb>
-      <BreadcrumbItem>YOU ARE HERE</BreadcrumbItem>
       <BreadcrumbItem active>Typography</BreadcrumbItem>
     </Breadcrumb>
     <h1 className="page-title mb-lg">Typography - <span className="fw-semi-bold">Texts & Display</span></h1>

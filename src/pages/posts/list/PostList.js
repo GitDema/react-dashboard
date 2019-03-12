@@ -39,7 +39,6 @@ class PostList extends React.Component {
     return (
       <div className={s.root}>
         <Breadcrumb>
-          <BreadcrumbItem>YOU ARE HERE</BreadcrumbItem>
           <BreadcrumbItem active>Posts</BreadcrumbItem>
         </Breadcrumb>
         <h1>Posts</h1>

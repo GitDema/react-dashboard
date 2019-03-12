@@ -37,7 +37,6 @@ class Icons extends React.Component {
     return (
       <section className={s.root}>
         <Breadcrumb>
-          <BreadcrumbItem>YOU ARE HERE</BreadcrumbItem>
           <BreadcrumbItem active>Icons</BreadcrumbItem>
         </Breadcrumb>
         <h1 className="page-title mb-lg">UI - <span className="fw-semi-bold">Icons</span></h1>

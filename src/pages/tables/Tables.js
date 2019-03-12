@@ -142,7 +142,6 @@ class Tables extends Component {
     return (
       <div>
         <Breadcrumb>
-          <BreadcrumbItem>YOU ARE HERE</BreadcrumbItem>
           <BreadcrumbItem active>Tables Basic</BreadcrumbItem>
         </Breadcrumb>
         <h1 className="page-title mb-lg">Tables - <span className="fw-semi-bold">Basic</span></h1>

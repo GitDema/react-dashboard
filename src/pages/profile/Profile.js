@@ -26,7 +26,6 @@ class Profile extends PureComponent {
     return (
       <div className={s.root}>
         <Breadcrumb>
-          <BreadcrumbItem>YOU ARE HERE</BreadcrumbItem>
           <BreadcrumbItem active>Profile</BreadcrumbItem>
         </Breadcrumb>
         <h1 className="mb-lg">Profile</h1>

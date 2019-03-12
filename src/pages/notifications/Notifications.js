@@ -152,7 +152,6 @@ class Notifications extends React.Component {
     return (
       <div className={s.root}>
         <Breadcrumb>
-          <BreadcrumbItem>YOU ARE HERE</BreadcrumbItem>
           <BreadcrumbItem active>UI Notifications</BreadcrumbItem>
         </Breadcrumb>
         <h1 className="page-title mb-lg">Messages - <span className="fw-semi-bold">Notifications</span>

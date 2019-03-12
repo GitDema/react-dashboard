@@ -76,11 +76,11 @@ class Login extends React.Component {
         <div className={s.root}>
           <Row>
             <Col xs={{size: 10, offset: 1}} sm={{size: 6, offset: 3}} lg={{size:4, offset: 4}}>
-              <p className="text-center">React Dashboard</p>
+              <p className="text-center">OPN - Admin Dashboard</p>
               <Widget className={s.widget}>
                 <h4 className="mt-0">Login to your Web App</h4>
                 <p className="fs-sm text-muted">
-                  User your username and password to sign in<br />
+                  Use your username and password to sign in<br />
                   Don&#39;t have an account? Sign up now!
                 </p>
                 <Form className="mt" onSubmit={this.doLogin}>

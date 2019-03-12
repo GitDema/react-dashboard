@@ -60,7 +60,6 @@ class Dashboard extends Component {
     return (
       <div className={s.root}>
         <Breadcrumb>
-          <BreadcrumbItem>YOU ARE HERE</BreadcrumbItem>
           <BreadcrumbItem active>Dashboard</BreadcrumbItem>
         </Breadcrumb>
         <h1 className="mb-lg">Dashboard</h1>

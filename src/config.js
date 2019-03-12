@@ -33,14 +33,13 @@ module.exports = {
   },
 
   defaultMeta: {
-    title: 'React Dashboard',
-    description:
-      'React Dashboard Starter project based on react-router 4, redux, graphql, bootstrap',
+    title: 'OPN - Admin Dashboard',
+    description: 'OPN - Admin Dashboard',
   },
 
   // Authentication
   auth: {
-    jwt: { secret: process.env.JWT_SECRET || 'React Dashboard' },
+    jwt: { secret: process.env.JWT_SECRET || 'OPN - Admin Dashboard' },
 
     // https://developers.facebook.com/
     facebook: {
