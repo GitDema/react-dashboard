@@ -102,10 +102,10 @@ class Header extends React.Component {
             </DropdownToggle>
             <DropdownMenu style={{width: '100%'}}>
               <DropdownItem>
-                <NavLink to="/app/posts">Posts</NavLink>
+                <NavLink to="/admin/posts">Posts</NavLink>
               </DropdownItem>
               <DropdownItem>
-                <NavLink to="/app/profile">Profile</NavLink>
+                <NavLink to="/admin/profile">Profile</NavLink>
               </DropdownItem>
               <DropdownItem onClick={this.doLogout}>
                 Logout

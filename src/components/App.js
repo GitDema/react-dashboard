@@ -80,10 +80,10 @@ class App extends React.PureComponent {
   render() {
     return (
       <Switch>
-        <Route path="/" exact render={() => <Redirect to="/app" />} />
+        <Route path="/" exact render={() => <Redirect to="/admin" />} />
         <PrivateRoute
           isAuthenticated={this.props.isAuthenticated}
-          path="/app"
+          path="/admin"
           component={LayoutComponent}
         />
         <Route path="/login" exact component={LoginComponent} />

@@ -30,9 +30,9 @@ class Footer extends React.Component {
         <div className={s.container}>
           <span>© 2019 &nbsp;Flatlogic LLC </span>
           <span className={s.spacer}>·</span>
-          <Link to="/app/tos">Terms of Service</Link>
+          <Link to="/admin/tos">Terms of Service</Link>
           <span className={s.spacer}>·</span>
-          <Link to="/app/privacy">Privacy Policy</Link>
+          <Link to="/admin/privacy">Privacy Policy</Link>
           <span className={s.spacer}>·</span>
           <Link to="/not-found">Support</Link>
         </div>

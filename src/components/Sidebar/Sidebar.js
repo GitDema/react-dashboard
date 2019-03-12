@@ -12,49 +12,49 @@ import s from './Sidebar.scss';
 const Sidebar = () => (
   <nav className={s.root}>
     <header className={s.logo}>
-      <Link to="/app">
+      <Link to="/admin">
         <img src={logo} alt="Logo" />
       </Link>
     </header>
     <ul className={s.nav}>
-      <LinksGroup header="Balance" headerLink="/app/balance" />
-      <LinksGroup header="My orders" headerLink="/app/my-orders" />
-      <LinksGroup header="Order" headerLink="/app/order" />
-      <LinksGroup header="Dashboard" headerLink="/app" glyph="dashboard" />
+      <LinksGroup header="Balance" headerLink="/admin/balance" />
+      <LinksGroup header="My orders" headerLink="/admin/my-orders" />
+      <LinksGroup header="Order" headerLink="/admin/order" />
+      <LinksGroup header="Dashboard" headerLink="/admin" glyph="dashboard" />
       <LinksGroup
         header="Typography"
-        headerLink="/app/typography"
+        headerLink="/admin/typography"
         glyph="typography"
       />
       <LinksGroup
         header="Tables Basic"
-        headerLink="/app/tables"
+        headerLink="/admin/tables"
         glyph="tables"
       />
       <LinksGroup
         header="Notifications"
-        headerLink="/app/notifications"
+        headerLink="/admin/notifications"
         glyph="notifications"
       />
       <LinksGroup
         header="Components"
-        headerLink="/app/components"
+        headerLink="/admin/components"
         childrenLinks={[
           {
             name: 'Buttons',
-            link: '/app/components/buttons',
+            link: '/admin/components/buttons',
           },
           {
             name: 'Charts',
-            link: '/app/components/charts',
+            link: '/admin/components/charts',
           },
           {
             name: 'Icons',
-            link: '/app/components/icons',
+            link: '/admin/components/icons',
           },
           {
             name: 'Maps',
-            link: '/app/components/maps',
+            link: '/admin/components/maps',
           },
         ]}
         glyph="components"

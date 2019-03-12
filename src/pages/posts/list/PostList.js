@@ -47,7 +47,7 @@ class PostList extends React.Component {
           title={
             <div>
               <div className="pull-right mt-n-xs">
-                <Link to="/app/posts/new" className="btn btn-sm btn-inverse">
+                <Link to="/admin/posts/new" className="btn btn-sm btn-inverse">
                   Create new
                 </Link>
               </div>
