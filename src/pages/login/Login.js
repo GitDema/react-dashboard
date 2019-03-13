@@ -78,10 +78,9 @@ class Login extends React.Component {
             <Col xs={{size: 10, offset: 1}} sm={{size: 6, offset: 3}} lg={{size:4, offset: 4}}>
               <p className="text-center">OPN - Admin Dashboard</p>
               <Widget className={s.widget}>
-                <h4 className="mt-0">Login to your Web App</h4>
+                <h4 className="mt-0">Login to OPN Admin Dashboard</h4>
                 <p className="fs-sm text-muted">
-                  Use your username and password to sign in<br />
-                  Don&#39;t have an account? Sign up now!
+                  Use your <b>user</b> and <b>password</b> to sign in
                 </p>
                 <Form className="mt" onSubmit={this.doLogin}>
                   {this.props.errorMessage && (
