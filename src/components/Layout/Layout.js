@@ -33,6 +33,9 @@ import Footer from '../Footer';
 import Bundle from '../../core/Bundle';
 import Sidebar from '../Sidebar';
 
+import Order from '../../pages/order/Order';
+import Orders from '../../pages/orders/Orders';
+
 // Dashboard component is loaded directly as an example of server side rendering
 import Dashboard from '../../pages/dashboard/Dashboard';
 
@@ -103,14 +106,18 @@ class Layout extends React.Component {
                 exact
                 component={IconsBundle}
               />
-              <Route path="/admin/components/maps" exact component={MapsBundle} />
               <Route
-                path="/admin/my-orders"
+                path="/admin/components/maps"
                 exact
-                render={() => <p>My orders</p>}
+                component={MapsBundle}
               />
-              <Route path="/admin/order" exact render={() => <p>Order</p>} />
-              <Route path="/admin/balance" exact render={() => <p>Balance</p>} />
+              <Route path="/admin/orders" exact component={Orders} />
+              <Route path="/admin/order/:id" exact component={Order} />
+              <Route
+                path="/admin/balance"
+                exact
+                render={() => <p>Balance</p>}
+              />
               <Route component={NotFoundBundle} />
             </Switch>
           </main>

@@ -17,9 +17,14 @@ const Sidebar = () => (
       </Link>
     </header>
     <ul className={s.nav}>
-      <LinksGroup header="Balance" headerLink="/admin/balance" />
-      <LinksGroup header="My orders" headerLink="/admin/my-orders" />
-      <LinksGroup header="Order" headerLink="/admin/order" />
+      <LinksGroup
+        header="Balance"
+        headerLink="/admin/balance"
+        glyph="dashboard"
+      />
+      <LinksGroup header="Orders" headerLink="/admin/orders" glyph="tables" />
+      {/* <LinksGroup header="Order" headerLink="/admin/order" glyph="typography" /> */}
+      <hr />
       <LinksGroup header="Dashboard" headerLink="/admin" glyph="dashboard" />
       <LinksGroup
         header="Typography"

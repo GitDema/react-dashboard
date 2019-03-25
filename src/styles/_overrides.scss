@@ -168,6 +168,19 @@
   }
 }
 
+.mainTable {
+  td,
+  thead {
+    border-top: 1px solid $gray-200;
+    padding: 1.25rem 1rem;
+  }
+
+  thead th {
+    color: theme-color('light');
+    text-transform: uppercase;
+  }
+}
+
 // Code
 
 pre {
