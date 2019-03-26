@@ -1,37 +1,27 @@
 /* eslint-disable jsx-a11y/label-has-for */
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { Row, Col, Breadcrumb, BreadcrumbItem, Button } from 'reactstrap';
 
 import Widget from '../../components/Widget';
 
+/* 
+
+-product name
+-title of propose
+-parameters
+-requirements
+-photos
+-documents
+
+*/
+
+const inputs = {
+  width: '100%',
+};
+
 class Order extends Component {
-  // constructor(props) {
-  //   super(props);
-
-  //   this.state = {
-  //     order: {
-  //       id: 43562,
-  //       name: 'Acetone',
-  //       picture: require('../../images/tables/thumbBox.png'), // eslint-disable-line global-require
-  //       description:
-  //         'Lorem ipsum, dolor sit? Ullam eveniet, ipsam accusantium consequatur ab maxime eos?',
-  //       label: {
-  //         colorClass: 'success',
-  //         text: 'Proved',
-  //       },
-  //       date: new Date('10. 12. 2019'),
-  //       price: 1800,
-  //     },
-  //   };
-  // }
-
-  // componentDidMount() {
-  //   // get order
-  //   //  order: location.pathname.substr(location.pathname.lastIndexOf('/') + 1)
-  // }
-
   render() {
-    // const { order } = this.state;
     return (
       <div>
         <Breadcrumb>
@@ -47,29 +37,67 @@ class Order extends Component {
           <Col sm="6">
             <Widget settings close>
               <form>
-                <label htmlFor="name">Name:</label>
+                <label htmlFor="name">Product name:</label>
                 <br />
-                <input type="text" id="name" />
-                <br />
-                <br />
-
-                <label htmlFor="desc">Description:</label>
-                <br />
-                <input type="text" id="desc" />
-                <br />
-
+                <input type="text" id="name" style={inputs} />
                 <br />
                 <br />
 
-                <Button
-                  color="warning"
-                  className="btn-rounded width-100 mb-xs mr-xs"
-                >
-                  Cancel
-                </Button>
-                <Button color="success" className="width-100 mb-xs mr-xs">
-                  Save
-                </Button>
+                <label htmlFor="desc">Title of propose:</label>
+                <br />
+                <input type="text" id="desc" style={inputs} />
+                <br />
+                <br />
+
+                <label htmlFor="param">Parameters:</label>
+                <br />
+                <input type="text" id="param" style={inputs} />
+                <br />
+                <br />
+
+                <label htmlFor="req">Requirements:</label>
+                <br />
+                <textarea name="req" id="req" rows="8" style={inputs} />
+                <br />
+                <br />
+
+                <label htmlFor="photos">Photos:</label>
+                <br />
+                <input
+                  type="file"
+                  id="photos"
+                  accept="image/png, image/jpeg, image/gif"
+                  multiple
+                />
+                <br />
+                <br />
+
+                <label htmlFor="docs">Documents:</label>
+                <br />
+                <input
+                  type="file"
+                  id="docs"
+                  accept="application/doc, application/pdf, application/xls"
+                  multiple
+                />
+                <br />
+
+                <br />
+                <br />
+                <Link to="/admin/orders">
+                  <Button
+                    color="warning"
+                    className="btn-rounded width-100 mb-xs mr-xs"
+                  >
+                    Cancel
+                  </Button>
+                </Link>
+
+                <Link to="/admin/orders">
+                  <Button color="success" className="width-100 mb-xs mr-xs">
+                    Save
+                  </Button>
+                </Link>
               </form>
             </Widget>
           </Col>

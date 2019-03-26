@@ -9,6 +9,7 @@ import {
   BreadcrumbItem,
   Button,
 } from 'reactstrap';
+import moment from 'moment';
 import axios from 'axios';
 
 import Widget from '../../components/Widget';
@@ -17,73 +18,7 @@ class Orders extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      orders: [
-        {
-          id: 43560,
-          productName: 'Acetone',
-          photos: require('../../images/tables/thumbBox.png'), // eslint-disable-line global-require
-          documents: ['doc.pdf', 'stats.doc'],
-          proposeTitle: 'Propose title',
-          action: 'Buy',
-          companyName: 'companyName',
-          country: 'country',
-          deliveryTerms: '3 days',
-          proposeAnnounce: new Date('11. 12. 2019'),
-          deliveryVariants: 'by car',
-          requirements: 'participantsRequirements',
-          parameters: 'parameters',
-          money: {
-            currency: '$',
-            price: 2000,
-          },
-          description:
-            'Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ',
-        },
-        {
-          id: 43561,
-          productName: 'Acetone',
-          photos: require('../../images/tables/thumbBox.png'), // eslint-disable-line global-require
-          documents: ['doc.pdf'],
-          proposeTitle: 'Propose title',
-          action: 'Sell',
-          companyName: 'companyName',
-          country: 'country',
-          deliveryTerms: '2 days',
-          proposeAnnounce: new Date('06. 12. 2019'),
-          deliveryVariants: 'by car',
-          requirements: 'participantsRequirements',
-          parameters: 'parameters',
-          money: {
-            currency: '$',
-            price: 2000,
-          },
-          description:
-            'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Provident voluptas nulla id aut, eum odio fugiat libero, voluptatibus distinctio commodi eaque laudantium? Ullam eveniet, ipsam accusantium consequatur ab maxime eos?',
-        },
-        {
-          id: 43562,
-          productName: 'Acetone',
-          photos: require('../../images/tables/thumbBox.png'), // eslint-disable-line global-require
-          documents: ['doc.pdf', 'stats.xls'],
-          proposeTitle: 'Propose title',
-          action: 'Buy',
-          companyName: 'companyName',
-          country: 'country',
-          deliveryTerms: '1 day ',
-          proposeAnnounce: new Date('10. 12. 2019'),
-          deliveryVariants: 'by car',
-          requirements: 'participantsRequirements',
-          parameters: 'parameters',
-          money: {
-            currency: '$',
-            price: 2000,
-          },
-          description:
-            'Lorem ipsum, dolor sit? Ullam eveniet, ipsam accusantium consequatur ab maxime eos?',
-        },
-      ],
-    };
+    this.state = {};
   }
 
   componentDidMount() {
@@ -96,26 +31,17 @@ class Orders extends Component {
         offset: 1,
       })
       .then(res => {
-        this.setState({ orders: res.result });
-        // eslint-disable-next-line no-console
-        console.log(res);
-        // eslint-disable-next-line no-console
-        console.log(res.data);
+        this.setState({ orders: res.data.result });
       });
-  }
-
-  parseDate(date) {
-    this.dateSet = date.toDateString().split(' ');
-    return `${date.toLocaleString('en-us', { month: 'long' })} ${
-      this.dateSet[2]
-    }, ${this.dateSet[3]}`;
   }
 
   render() {
     const { orders } = this.state;
 
     if (!orders) {
-      return 'wait...';
+      return (
+        <p style={{ textAlign: 'center', fontSize: '22px' }}>Loading...</p>
+      );
     }
 
     return (
@@ -150,12 +76,14 @@ class Orders extends Component {
                     {orders.map((order, key) => (
                       <tr key={order.created_at}>
                         <td>
-                          <img
-                            className="img-rounded"
-                            src={order.photos}
-                            alt=""
-                            height="60"
-                          />
+                          {order.photos.length > 0 && (
+                            <img
+                              className="img-rounded"
+                              src={order.photos[0].path}
+                              alt=""
+                              height="60"
+                            />
+                          )}
                         </td>
 
                         <td>
@@ -168,7 +96,9 @@ class Orders extends Component {
                           <div className="mb-0">
                             <small>
                               <span className="fw-semi-bold">Product:</span>
-                              <p className="text-muted">{order.productName}</p>
+                              <p className="text-muted">
+                                {order.name ? order.name : '-'}
+                              </p>
                             </small>
                           </div>
                           <div className="mb-0">
@@ -176,7 +106,9 @@ class Orders extends Component {
                               <span className="fw-semi-bold">
                                 Title of propose:
                               </span>
-                              <p className="text-muted">{order.proposeTitle}</p>
+                              <p className="text-muted">
+                                {order.proposeTitle ? order.proposeTitle : '-'}
+                              </p>
                             </small>
                           </div>
                           <div className="mb-0">
@@ -185,7 +117,8 @@ class Orders extends Component {
                                 Currency/Price:
                               </span>
                               <p className="text-muted">
-                                {order.money.currency} {order.money.price}
+                                {order.currency === 'USD' ? '$' : '-'}{' '}
+                                {order.price}
                               </p>
                             </small>
                           </div>
@@ -195,7 +128,7 @@ class Orders extends Component {
                               <span className="text-muted">
                                 {' '}
                                 <Badge color="info">
-                                  {order.action.toUpperCase()}
+                                  {order.purpose ? order.purpose : '-'}
                                 </Badge>
                               </span>
                             </small>
@@ -206,13 +139,20 @@ class Orders extends Component {
                           <div className="mb-0">
                             <small>
                               <span className="fw-semi-bold">Name:</span>
-                              <p className="text-muted">{order.companyName}</p>
+                              <p className="text-muted">
+                                {order.user && order.user.company_name
+                                  ? order.user.company_name
+                                  : '-'}
+                              </p>
                             </small>
                           </div>
                           <div className="mb-0">
                             <small>
                               <span className="fw-semi-bold">Country:</span>
-                              <p className="text-muted"> {order.country}</p>
+                              <p className="text-muted">
+                                {' '}
+                                {order.country ? order.country : '-'}
+                              </p>
                             </small>
                           </div>
                         </td>
@@ -220,9 +160,11 @@ class Orders extends Component {
                         <td>
                           <div className="mb-0">
                             <small>
-                              <span className="fw-semi-bold">Terms:</span>
+                              <span className="fw-semi-bold">Term:</span>
                               <p className="text-muted">
-                                {order.deliveryTerms}
+                                {order.delivery.term
+                                  ? order.delivery.term
+                                  : '-'}
                               </p>
                             </small>
                           </div>
@@ -230,19 +172,23 @@ class Orders extends Component {
                             <small>
                               <span className="fw-semi-bold">Variants:</span>
                               <p className="text-muted">
-                                {order.deliveryVariants}
+                                {order.delivery.variant
+                                  ? order.delivery.variant
+                                  : '-'}
                               </p>
                             </small>
                           </div>
                         </td>
 
                         <td className="text-semi-muted">
-                          {this.parseDate(order.proposeAnnounce)}
+                          {moment(order.auction.start).format('DD.MM.YYYY')}
+                          <br />
+                          {moment(order.auction.start).format('HH:mm')}
                         </td>
 
-                        <td>{order.parameters}</td>
+                        <td>{order.parameters ? order.parameters : '-'}</td>
 
-                        <td>{order.requirements}</td>
+                        <td>{order.requirements ? order.requirements : '-'}</td>
 
                         <td>
                           <div className="mb-0">
@@ -250,11 +196,11 @@ class Orders extends Component {
                               <span className="fw-semi-bold">Documents:</span>
                               {order.documents.map(doc => (
                                 <p
-                                  key={doc}
+                                  key={doc.filename}
                                   className="text-muted"
                                   style={{ margin: 0 }}
                                 >
-                                  {doc}
+                                  {doc.filename}
                                 </p>
                               ))}
                             </small>
@@ -264,7 +210,7 @@ class Orders extends Component {
                         <td>{order.description}</td>
 
                         <td>
-                          <Link to={`/admin/order/${order.id}`}>
+                          <Link to={`/admin/order/${order._id}`}>{/* eslint-disable-line */}
                             <Button
                               color="primary"
                               className="width-100 mb-xs mr-xs"
