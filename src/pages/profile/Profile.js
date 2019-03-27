@@ -18,7 +18,7 @@ import Widget from '../../components/Widget';
 import s from './Profile.scss';
 
 class Profile extends PureComponent {
-  onSubmit(e) { // eslint-disable-line
+  onSubmit(e) { 
     e.preventDefault();
   }
 

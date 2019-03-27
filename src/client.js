@@ -19,7 +19,7 @@ import createFetch from './createFetch';
 import configureStore from './store/configureStore';
 import theme from './styles/theme.scss';
 
-// eslint-disable-next-line no-underscore-dangle
+
 theme._insertCss();
 // Global (context) variables that can be easily accessed from any React component
 // https://facebook.github.io/react/docs/context.html
@@ -27,7 +27,7 @@ const context = {
   // Enables critical path CSS rendering
   // https://github.com/kriasoft/isomorphic-style-loader
   insertCss: (...styles) => {
-    // eslint-disable-next-line no-underscore-dangle
+    
     const removeCss = styles.map(x => x._insertCss());
     return () => {
       removeCss.forEach(f => f());

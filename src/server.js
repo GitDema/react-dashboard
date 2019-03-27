@@ -32,7 +32,7 @@ import configureStore from './store/configureStore';
 import { setRuntimeVariable } from './actions/runtime';
 import { receiveLogin, receiveLogout } from './actions/user';
 import config from './config';
-import assets from './assets.json'; // eslint-disable-line import/no-unresolved
+import assets from './assets.json';
 import theme from './styles/theme.scss';
 
 const app = express();
@@ -65,7 +65,6 @@ app.use(
 );
 // Error handler for express-jwt
 app.use((err, req, res, next) => {
-  // eslint-disable-line no-unused-vars
   if (err instanceof Jwt401Error) {
     console.error('[express-jwt-error]', req.cookies.id_token);
     // `clearCookie`, otherwise user can't use web-app until cookie expires
@@ -83,8 +82,8 @@ app.post('/login', (req, res) => {
   // replace with real database check in production
   // const user = graphql.find(req.login, req.password);
   let user = false;
-  const login = req.body.login; // eslint-disable-line
-  const password = req.body.password; // eslint-disable-line
+  const login = req.body.login;
+  const password = req.body.password;
   if (login === 'user' && password === 'password') {
     user = { user, login };
   }
@@ -98,7 +97,9 @@ app.post('/login', (req, res) => {
     });
     res.json({ id_token: token });
   } else {
-    res.status(401).json({ message: 'To login use user: "user", password: "password".' });
+    res
+      .status(401)
+      .json({ message: 'To login use user: "user", password: "password".' });
   }
 });
 
@@ -163,7 +164,6 @@ app.get('*', async (req, res, next) => {
       // Enables critical path CSS rendering
       // https://github.com/kriasoft/isomorphic-style-loader
       insertCss: (...styles) => {
-        // eslint-disable-next-line no-underscore-dangle
         styles.forEach(style => css.add(style._getCss()));
       },
       fetch,
@@ -172,15 +172,15 @@ app.get('*', async (req, res, next) => {
       storeSubscription: null,
     };
 
-    // eslint-disable-next-line no-underscore-dangle
     css.add(theme._getCss());
 
     const data = {
       title: 'OPN - Admin Dashboard',
       description:
         'React Admin Starter project based on react-router 4, redux, graphql, bootstrap 4',
-      keywords: 'react dashboard, react admin template, react dashboard open source, react starter, react admin, react themes, react dashboard template',
-      author: 'Flatlogic LLC'
+      keywords:
+        'react dashboard, react admin template, react dashboard open source, react starter, react admin, react themes, react dashboard template',
+      author: 'Flatlogic LLC',
     };
     data.styles = [{ id: 'css', cssText: [...css].join('') }];
     data.scripts = [assets.vendor.js, assets.client.js];
@@ -218,13 +218,12 @@ pe.skipNodeFiles();
 pe.skipPackage('express');
 
 app.use((err, req, res) => {
-  // eslint-disable-line no-unused-vars
   console.error(pe.render(err));
   const html = ReactDOM.renderToStaticMarkup(
     <Html
       title="Internal Server Error"
       description={err.message}
-      styles={[{ id: 'css', cssText: errorPageStyle._getCss() }]} // eslint-disable-line no-underscore-dangle
+      styles={[{ id: 'css', cssText: errorPageStyle._getCss() }]}
     >
       {ReactDOM.renderToString(<ErrorPageWithoutStyle error={err} />)}
     </Html>,

@@ -18,21 +18,41 @@ class Orders extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      clientId: null,
+    };
   }
 
   componentDidMount() {
     axios
-      .post('https://dev.opnplatform.com/api/v1/orders/get/1/all', {
-        clientId: 'b00cf4559c8819ada37011b4cda071135dc82d73',
-        access_token:
-          '8b65edd00728e8f5a3dc93d5e4c24eb4fb42058bcc386382a6b719b9f5133b3e3f1933ee28190717487ca392981db548a196444a190f85aaf975bf11d709a02e7ea3a104c1ac4acb2f2a592a5f0381ad6b806330ac917a1574f145dd9285b2fe',
-        count: 250,
-        offset: 1,
-      })
+      .get('https://dev.opnplatform.com/api/v1/client/id')
       .then(res => {
-        this.setState({ orders: res.data.result });
-      });
+        this.setState({ clientId: res.data.result.clientId });
+      })
+      .then(() =>
+        axios
+          .post('https://dev.opnplatform.com/api/v1/user/login', {
+            clientId: this.state.clientId,
+            email: 'OPNAdmin@opnplatform.com',
+            password: '8wsBua9Q9a9Y',
+          })
+          .then(res => {
+            this.setState({ access_token: res.data.result.access_token.token });
+          }),
+      )
+      .then(() =>
+        axios
+          .post('https://dev.opnplatform.com/api/v1/orders/get/1/all', {
+            clientId: this.state.clientId,
+            access_token: this.state.access_token,
+            count: 250,
+            offset: 1,
+          })
+          .then(res => {
+            this.setState({ orders: res.data.result });
+          }),
+      )
+      .catch(err => console.log(err));
   }
 
   render() {
@@ -210,7 +230,8 @@ class Orders extends Component {
                         <td>{order.description}</td>
 
                         <td>
-                          <Link to={`/admin/order/${order._id}`}>{/* eslint-disable-line */}
+                          <Link to={`/admin/order/${order._id}`}>
+                            {/* eslint-disable-line */}
                             <Button
                               color="primary"
                               className="width-100 mb-xs mr-xs"

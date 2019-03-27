@@ -39,7 +39,7 @@ export default function createLogger() {
       formattedPayload = inspectObject(action);
     }
 
-    console.log(` * ${action.type}: ${formattedPayload}`); // eslint-disable-line no-console
+    console.log(` * ${action.type}: ${formattedPayload}`); 
     return next(action);
   };
 }

@@ -13,7 +13,7 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import { Switch, Route, withRouter } from 'react-router';
 
 // an example of react-router code-splitting
-/* eslint-disable */
+
 import loadPosts from 'bundle-loader?lazy!../../pages/posts';
 import loadPrivacy from 'bundle-loader?lazy!../../pages/privacy';
 import loadProfile from 'bundle-loader?lazy!../../pages/profile';
@@ -25,7 +25,7 @@ import loadCharts from 'bundle-loader?lazy!../../pages/charts';
 import loadIcons from 'bundle-loader?lazy!../../pages/icons';
 import loadMaps from 'bundle-loader?lazy!../../pages/google';
 import loadNotFound from 'bundle-loader?lazy!../../pages/notFound';
-/* eslint-enable */
+
 
 import s from './Layout.scss';
 import Header from '../Header';

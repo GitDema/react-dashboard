@@ -11,7 +11,7 @@ import Icon from '../../Icon/Icon';
 import s from './LinksGroup.scss';
 
 class LinksGroup extends Component {
-  /* eslint-disable */
+  
   static propTypes = {
     header: PropTypes.node.isRequired,
     headerLink: PropTypes.string,
@@ -19,7 +19,7 @@ class LinksGroup extends Component {
     glyph: PropTypes.string,
     className: PropTypes.string,
   };
-  /* eslint-enable */
+  
 
   static defaultProps = {
     headerLink: null,
@@ -55,7 +55,7 @@ class LinksGroup extends Component {
         </li>
       );
     }
-    /* eslint-disable */
+    
     return (
       <Route
         path={headerLink}
@@ -72,7 +72,7 @@ class LinksGroup extends Component {
                 </div>
                 <b className={cx('fa fa-angle-left arrow', s.arrow, {[s.arrowActive]: isOpen})} />
               </a>
-              {/* eslint-enable */}
+              {}
               <Collapse className={s.panel} isOpen={isOpen}>
                 <ul>
                   {childrenLinks &&

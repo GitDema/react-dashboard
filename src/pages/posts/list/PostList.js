@@ -17,7 +17,7 @@ import { fetchPosts } from '../../../actions/posts';
 class PostList extends React.Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    posts: PropTypes.array, // eslint-disable-line
+    posts: PropTypes.array, 
     isFetching: PropTypes.bool,
   };
 

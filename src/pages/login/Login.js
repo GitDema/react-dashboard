@@ -16,7 +16,7 @@ import { withRouter, Redirect } from 'react-router';
 import Widget from '../../components/Widget';
 import Footer from '../../components/Footer';
 
-import s from './Login.scss'; // eslint-disable-line
+import s from './Login.scss'; 
 import { loginUser } from '../../actions/user';
 
 class Login extends React.Component {
@@ -24,7 +24,7 @@ class Login extends React.Component {
     dispatch: PropTypes.func.isRequired,
     isAuthenticated: PropTypes.bool,
     isFetching: PropTypes.bool,
-    location: PropTypes.any, // eslint-disable-line
+    location: PropTypes.any, 
     errorMessage: PropTypes.string,
   };
 

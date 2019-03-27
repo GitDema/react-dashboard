@@ -29,13 +29,13 @@ import { fetchPosts } from '../../actions/posts';
 import s from './Dashboard.scss';
 
 class Dashboard extends Component {
-  /* eslint-disable */
+  
   static propTypes = {
     posts: PropTypes.any,
     isFetching: PropTypes.bool,
     dispatch: PropTypes.func.isRequired,
   };
-  /* eslint-enable */
+  
 
   static defaultProps = {
     posts: [],
@@ -174,11 +174,11 @@ class Dashboard extends Component {
               title={
                 <div>
                   <div className="pull-right mt-n-xs">
-                    {/* eslint-disable */}
+                    {}
                     <a href="#" className="td-underline fs-sm">
                       Options
                     </a>
-                    {/* eslint-enable */}
+                    {}
                   </div>
                   <h5 className="mt-0 mb-0">
                     Recent posts{' '}

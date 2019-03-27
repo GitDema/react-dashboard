@@ -30,7 +30,7 @@ class Tables extends Component {
       tableStyles: [
         {
           id: 1,
-          picture: require('../../images/tables/1.jpg'), // eslint-disable-line global-require
+          picture: require('../../images/tables/1.jpg'), 
           description: 'Palo Alto',
           info: {
             type: 'JPEG',
@@ -45,7 +45,7 @@ class Tables extends Component {
         },
         {
           id: 2,
-          picture: require('../../images/tables/2.jpg'), // eslint-disable-line global-require
+          picture: require('../../images/tables/2.jpg'), 
           description: 'The Sky',
           info: {
             type: 'PSD',
@@ -60,7 +60,7 @@ class Tables extends Component {
         },
         {
           id: 3,
-          picture: require('../../images/tables/3.jpg'), // eslint-disable-line global-require
+          picture: require('../../images/tables/3.jpg'), 
           description: 'Down the road',
           label: {
             colorClass: 'success',
@@ -79,7 +79,7 @@ class Tables extends Component {
         },
         {
           id: 4,
-          picture: require('../../images/tables/4.jpg'), // eslint-disable-line global-require
+          picture: require('../../images/tables/4.jpg'), 
           description: 'The Edge',
           info: {
             type: 'PNG',
@@ -94,7 +94,7 @@ class Tables extends Component {
         },
         {
           id: 5,
-          picture: require('../../images/tables/5.jpg'), // eslint-disable-line global-require
+          picture: require('../../images/tables/5.jpg'), 
           description: 'Fortress',
           info: {
             type: 'JPEG',
@@ -315,7 +315,7 @@ class Tables extends Component {
                       <th>Status</th>
                     </tr>
                   </thead>
-                  {/* eslint-disable */}
+                  {}
                   <tbody>
                     <tr>
                       <td>1</td>
@@ -346,7 +346,7 @@ class Tables extends Component {
                       <td><Badge color="gray" className="text-gray-light" pill>Active</Badge></td>
                     </tr>
                   </tbody>
-                  {/* eslint-enable */}
+                  {}
                 </Table>
               </div>
             </Widget>

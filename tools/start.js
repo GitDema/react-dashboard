@@ -143,11 +143,11 @@ async function start() {
   serverCompiler.plugin('compile', () => {
     if (!appPromiseIsResolved) return;
     appPromiseIsResolved = false;
-    // eslint-disable-next-line no-return-assign
+    
     appPromise = new Promise(
-      /* eslint-disable */
+      
       resolve => (appPromiseResolve = resolve),
-      /* eslint-enable */
+      
     );
   });
 

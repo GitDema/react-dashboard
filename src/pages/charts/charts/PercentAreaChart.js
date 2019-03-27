@@ -27,7 +27,7 @@ class PercentAreaChart extends PureComponent {
 
   toPercent = (decimal, fixed = 0) => `${(decimal * 100).toFixed(fixed)}%`;
 
-  renderTooltipContent = o => { // eslint-disable-line
+  renderTooltipContent = o => { 
     const { payload, label } = o;
     const total = payload.reduce((result, entry) => (result + entry.value), 0);
     
@@ -37,11 +37,11 @@ class PercentAreaChart extends PureComponent {
         <ul className="list">
           {
             payload.map((entry, index) => (
-              /* eslint-disable */
+              
               <li key={`item-${index}`} style={{color: entry.color}}>
                 {`${entry.name}: ${entry.value}(${this.getPercent(entry.value, total)})`}
               </li>
-              /* eslint-enable */
+              
             ))
           }
         </ul>

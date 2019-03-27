@@ -32,7 +32,7 @@ function run(fn, options) {
 }
 
 if (require.main === module && process.argv.length > 2) {
-  // eslint-disable-next-line no-underscore-dangle
+  
   delete require.cache[__filename];
 
   // eslint-disable-next-line global-require, import/no-dynamic-require

@@ -76,7 +76,6 @@
     "assets-webpack-plugin": "^3.5.1",
     "autoprefixer": "^7.1.6",
     "babel-core": "^7.0.0-0",
-    "babel-eslint": "^8.0.2",
     "babel-jest": "^21.2.0",
     "babel-loader": "8.0.0-beta.0",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.10",
@@ -85,17 +84,6 @@
     "cross-env": "^5.0.1",
     "css-loader": "^0.28.7",
     "enzyme": "^3.1.1",
-    "eslint": "^4.11.0",
-    "eslint-config-airbnb": "^16.1.0",
-    "eslint-config-prettier": "^2.7.0",
-    "eslint-import-resolver-node": "^0.3.1",
-    "eslint-loader": "^1.9.0",
-    "eslint-plugin-css-modules": "^2.7.5",
-    "eslint-plugin-flowtype": "^2.39.1",
-    "eslint-plugin-import": "^2.8.0",
-    "eslint-plugin-jsx-a11y": "^6.0.2",
-    "eslint-plugin-prettier": "^2.3.1",
-    "eslint-plugin-react": "^7.4.0",
     "file-loader": "^1.1.5",
     "flow-bin": "^0.59.0",
     "front-matter": "^2.3.0",
@@ -104,7 +92,6 @@
     "identity-obj-proxy": "^3.0.0",
     "jest": "^21.2.1",
     "jscodeshift": "^0.3.32",
-    "lint-staged": "^4.0.0",
     "markdown-it": "^8.4.0",
     "mkdirp": "^0.5.1",
     "node-sass": "^4.11.0",
@@ -137,9 +124,6 @@
     "rimraf": "^2.6.2",
     "sass-loader": "6.0.3",
     "sinon": "^3.2.0",
-    "stylelint": "^8.2.0",
-    "stylelint-config-standard": "^17.0.0",
-    "stylelint-order": "^0.7.0",
     "svg-url-loader": "^2.3.0",
     "url-loader": "^0.6.2",
     "webpack": "^3.8.1",
@@ -151,27 +135,7 @@
   "resolutions": {
     "jquery": "3.3.1"
   },
-  "lint-staged": {
-    "*.{js,jsx}": [
-      "eslint --fix",
-      "git add --force"
-    ],
-    "*.{json,graphql}": [
-      "prettier --write",
-      "git add --force"
-    ],
-    "*.{css,less,scss,sss}": [
-      "stylelint --fix",
-      "git add --force"
-    ]
-  },
   "scripts": {
-    "precommit": "lint-staged",
-    "lint-js": "eslint --ignore-path .gitignore --ignore-pattern \"!**/.*\" .",
-    "lint-css": "stylelint \"src/**/*.{css,less,scss,sss}\"",
-    "lint": "yarn run lint-js && yarn run lint-css",
-    "fix-js": "yarn run lint-js --fix",
-    "fix-css": "yarn run lint-css --fix",
     "fix": "yarn run fix-js && yarn run fix-css",
     "check": "flow check",
     "test": "jest",

@@ -14,10 +14,10 @@ import { connect, Provider as ReduxProvider } from 'react-redux';
 
 import Bundle from '../core/Bundle';
 
-/* eslint-disable */
+
 import loadRegister from 'bundle-loader?lazy!../pages/register/Register';
 import loadNotFound from 'bundle-loader?lazy!../pages/notFound/NotFound';
-/* eslint-enable */
+
 
 import LayoutComponent from '../components/Layout/Layout';
 import LoginComponent from '../pages/login/Login';
@@ -38,7 +38,7 @@ const ContextType = {
   ...ReduxProvider.childContextTypes,
 };
 
-/* eslint-disable */
+
 const PrivateRoute = ({ component, isAuthenticated, ...rest }) =>
   <Route
     {...rest}
@@ -52,7 +52,7 @@ const PrivateRoute = ({ component, isAuthenticated, ...rest }) =>
             }}
           />}
   />;
-/* eslint-enable */
+
 
 class App extends React.PureComponent {
   static propTypes = {
