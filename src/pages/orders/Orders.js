@@ -47,6 +47,7 @@ class Orders extends Component {
             access_token: this.state.access_token,
             count: 250,
             offset: 1,
+            purpose:"BUY"
           })
           .then(res => {
             this.setState({ orders: res.data.result });
