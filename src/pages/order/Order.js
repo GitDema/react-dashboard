@@ -17,8 +17,6 @@ import Widget from '../../components/Widget';
 -documents
 
 */
-// todo @franckeeva what about server side rendering? this will fail unless launched as lazy route
-const { Messenger } = window;
 
 const inputsCss = {
   width: '100%',
@@ -37,6 +35,24 @@ class Order extends Component {
   }
 
   componentDidMount() {
+    axios
+      .get('https://dev.opnplatform.com/api/v1/client/id')
+      .then(res => {
+        this.setState({ clientId: res.data.result.clientId });
+      })
+      .then(() =>
+        axios
+          .post('https://dev.opnplatform.com/api/v1/user/login', {
+            clientId: this.state.clientId,
+            email: 'OPNAdmin@opnplatform.com',
+            password: '8wsBua9Q9a9Y',
+          })
+          .then(res => {
+            this.setState({ access_token: res.data.result.access_token.token });
+          }),
+      )
+      .catch(err => console.log(err));
+
     this.setState({
       order: this.props.order,
       orderName: this.props.order.name,
@@ -49,7 +65,26 @@ class Order extends Component {
     this.setState({ [name]: event.target.value });
   };
 
-  orderApprove() {}
+  orderApprove = () => {};
+
+  editOrder = () => {
+    axios
+      .post(
+        `https://dev.opnplatform.com/api/v1/orders/edit/${
+          this.props.order._id
+        }`,
+        {
+          clientId: this.state.clientId,
+          access_token: this.state.access_token,
+          title: this.state.orderName,
+          requirements: this.state.orderRequirements,
+        },
+      )
+      .then(res => {
+        this.setState({ orders: res.data.result });
+      })
+      .catch(err => console.log(err));
+  };
 
   render() {
     const {
@@ -152,12 +187,7 @@ class Order extends Component {
                       <Button
                         color="danger"
                         className="btn-rounded width-100 mb-xs mr-xs"
-                        onClick={() =>
-                          Messenger().post({
-                            message: 'Order editing cancelled',
-                            type: 'error',
-                          })
-                        }
+                        onClick={() => alert('Order editing cancelled')}
                       >
                         Cancel
                       </Button>
@@ -166,12 +196,10 @@ class Order extends Component {
                     <Button
                       color="success"
                       className="width-100 mb-xs mr-xs"
-                      onClick={() =>
-                        Messenger().post({
-                          message: 'Order editing saved',
-                          type: 'success',
-                        })
-                      }
+                      onClick={() => {
+                        this.editOrder();
+                        alert('Order editing saved');
+                      }}
                     >
                       Save
                     </Button>
@@ -180,29 +208,22 @@ class Order extends Component {
                   <div>
                     {order.status.toLowerCase() === 'placed' ? (
                       <Fragment>
-                        <Button
-                          className="width-100 mb-xs mr-xs"
-                          color="danger"
-                          outline
-                          onClick={() =>
-                            Messenger().post({
-                              message: 'Order rejected',
-                              type: 'error',
-                            })
-                          }
-                        >
-                          Reject
-                        </Button>
+                        <Link to="/admin/orders">
+                          <Button
+                            className="width-100 mb-xs mr-xs"
+                            color="danger"
+                            outline
+                            onClick={() => alert('Order rejected')}
+                          >
+                            Reject
+                          </Button>
+                        </Link>
+
                         <Button
                           className="width-100 mb-xs mr-xs"
                           color="success"
                           outline
-                          onClick={() =>
-                            Messenger().post({
-                              message: 'Order approved',
-                              type: 'success',
-                            })
-                          }
+                          onClick={() => alert('Order approved')}
                         >
                           Approve
                         </Button>
@@ -240,6 +261,7 @@ class Order extends Component {
                   <div className="order-photos">
                     {order.photos.map(photo => (
                       <a
+                        key={photo._id}
                         href={`http://dev.opnplatform.com/api/v1/file/${
                           photo._id
                         }`}
@@ -270,7 +292,7 @@ class Order extends Component {
                 {order.documents.length > 0 ? (
                   <div className="order-documents">
                     {order.documents.map(doc => (
-                      <Fragment>
+                      <Fragment key={doc._id}>
                         <a
                           href={`http://dev.opnplatform.com/api/v1/file/${
                             doc._id
