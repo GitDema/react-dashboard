@@ -232,3 +232,30 @@ pre {
     }
   }
 }
+
+
+// Order page
+
+.order-btns {
+  display: flex;
+  justify-content: space-between
+}
+
+.order-photos {
+  max-width: 399px;
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.order-photos a{
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+
+.order-photos a{
+  margin-bottom: 20px;
+}
+
+.order-photos a:nth-child(3n-7) {
+  margin: 0 20px 20px;
+}

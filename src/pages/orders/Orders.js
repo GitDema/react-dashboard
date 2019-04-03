@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
   Row,
@@ -13,6 +14,7 @@ import moment from 'moment';
 import axios from 'axios';
 
 import Widget from '../../components/Widget';
+import { setOrder } from '../../actions/order';
 
 class Orders extends Component {
   constructor(props) {
@@ -42,12 +44,11 @@ class Orders extends Component {
       )
       .then(() =>
         axios
-          .post('https://dev.opnplatform.com/api/v1/orders/get/1/all', {
+          .post('https://dev.opnplatform.com/api/v1/orders/get/2/all', {
             clientId: this.state.clientId,
             access_token: this.state.access_token,
             count: 250,
             offset: 1,
-            purpose:"BUY"
           })
           .then(res => {
             this.setState({ orders: res.data.result });
@@ -86,7 +87,7 @@ class Orders extends Component {
                       <th>Company</th>
                       <th>Delivery</th>
                       <th>Announce of propose</th>
-                      <th>Parameters</th>
+                      {/* <th>Parameters</th> */}
                       <th>Requirements</th>
                       <th>Documents</th>
                       <th>Description</th>
@@ -100,9 +101,15 @@ class Orders extends Component {
                           {order.photos.length > 0 && (
                             <img
                               className="img-rounded"
-                              src={order.photos[0].path}
-                              alt=""
+                              width="60"
                               height="60"
+                              style={{ objectFit: 'cover' }}
+                              src={`${location.protocol}//${
+                                location.hostname == 'localhost'
+                                  ? 'dev.opnplatform.com'
+                                  : location.hostname
+                              }/api/v1/file/${order.photos[0]._id}`}
+                              alt="Product photo"
                             />
                           )}
                         </td>
@@ -139,7 +146,7 @@ class Orders extends Component {
                               </span>
                               <p className="text-muted">
                                 {order.currency === 'USD' ? '$' : '-'}{' '}
-                                {order.price}
+                                {order.price / 100}
                               </p>
                             </small>
                           </div>
@@ -207,7 +214,7 @@ class Orders extends Component {
                           {moment(order.auction.start).format('HH:mm')}
                         </td>
 
-                        <td>{order.parameters ? order.parameters : '-'}</td>
+                        {/* <td>{order.parameters ? order.parameters : '-'}</td> */}
 
                         <td>{order.requirements ? order.requirements : '-'}</td>
 
@@ -236,6 +243,7 @@ class Orders extends Component {
                             <Button
                               color="primary"
                               className="width-100 mb-xs mr-xs"
+                              onClick={() => this.props.setOrder(order)}
                             >
                               Edit
                             </Button>
@@ -254,4 +262,15 @@ class Orders extends Component {
   }
 }
 
-export default Orders;
+const mapDispatchToProps = dispatch => {
+  return {
+    setOrder: order => {
+      dispatch(setOrder(order));
+    },
+  };
+};
+
+export default connect(
+  null,
+  mapDispatchToProps,
+)(Orders);
