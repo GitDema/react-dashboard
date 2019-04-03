@@ -17,6 +17,8 @@ import Widget from '../../components/Widget';
 -documents
 
 */
+// todo @franckeeva what about server side rendering? this will fail unless launched as lazy route
+const { Messenger } = window;
 
 const inputsCss = {
   width: '100%',
@@ -150,16 +152,29 @@ class Order extends Component {
                       <Button
                         color="danger"
                         className="btn-rounded width-100 mb-xs mr-xs"
+                        onClick={() =>
+                          Messenger().post({
+                            message: 'Order editing cancelled',
+                            type: 'error',
+                          })
+                        }
                       >
                         Cancel
                       </Button>
                     </Link>
 
-                    <Link to="/admin/orders">
-                      <Button color="success" className="width-100 mb-xs mr-xs">
-                        Save
-                      </Button>
-                    </Link>
+                    <Button
+                      color="success"
+                      className="width-100 mb-xs mr-xs"
+                      onClick={() =>
+                        Messenger().post({
+                          message: 'Order editing saved',
+                          type: 'success',
+                        })
+                      }
+                    >
+                      Save
+                    </Button>
                   </div>
 
                   <div>
@@ -169,6 +184,12 @@ class Order extends Component {
                           className="width-100 mb-xs mr-xs"
                           color="danger"
                           outline
+                          onClick={() =>
+                            Messenger().post({
+                              message: 'Order rejected',
+                              type: 'error',
+                            })
+                          }
                         >
                           Reject
                         </Button>
@@ -176,6 +197,12 @@ class Order extends Component {
                           className="width-100 mb-xs mr-xs"
                           color="success"
                           outline
+                          onClick={() =>
+                            Messenger().post({
+                              message: 'Order approved',
+                              type: 'success',
+                            })
+                          }
                         >
                           Approve
                         </Button>
@@ -243,14 +270,18 @@ class Order extends Component {
                 {order.documents.length > 0 ? (
                   <div className="order-documents">
                     {order.documents.map(doc => (
-                      <a
-                        href={`http://dev.opnplatform.com/api/v1/file/${
-                          doc._id
-                        }`}
-                        target="_black"
-                      >
-                        {doc.filename}
-                      </a>
+                      <Fragment>
+                        <a
+                          href={`http://dev.opnplatform.com/api/v1/file/${
+                            doc._id
+                          }`}
+                          target="_black"
+                        >
+                          {doc.filename}
+                        </a>
+                        <br />
+                        <br />
+                      </Fragment>
                     ))}
                   </div>
                 ) : (
