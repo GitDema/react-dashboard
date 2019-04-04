@@ -243,6 +243,7 @@ pre {
 
 .order-photos {
   max-width: 399px;
+  margin-top: 1em;
   display: flex;
   flex-flow: row wrap;
 }
@@ -258,4 +259,16 @@ pre {
 
 .order-photos a:nth-child(3n-7) {
   margin: 0 20px 20px;
+}
+
+.order-documents {
+  margin-top: 1em;
+}
+
+.order-info-item {
+  margin-bottom: 1em;
+}
+
+.order-info-item p {
+  margin: 0;
 }

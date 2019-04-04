@@ -2,8 +2,16 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Row, Col, Breadcrumb, BreadcrumbItem, Button } from 'reactstrap';
+import {
+  Row,
+  Col,
+  Breadcrumb,
+  BreadcrumbItem,
+  Badge,
+  Button,
+} from 'reactstrap';
 import axios from 'axios';
+import moment from 'moment';
 
 import Widget from '../../components/Widget';
 
@@ -106,13 +114,14 @@ class Order extends Component {
           <BreadcrumbItem active>Order</BreadcrumbItem>
         </Breadcrumb>
 
-        <h1 className="page-title mb-lg">Edit order #{order._id}</h1>
-
-        {console.log(order)}
+        <h2 className="page-title mb-lg">Edit order #{order._id}</h2>
 
         <Row>
           <Col sm="6">
             <Widget settings close>
+              <h3>Available for change</h3>
+              <br />
+
               <form>
                 <label htmlFor="name">Product name:</label>
                 <br />
@@ -255,40 +264,145 @@ class Order extends Component {
 
           <Col sm="6">
             <Widget settings close>
+              <h3>Full information</h3>
+              <br />
+
               <div>
-                <p>Photos:</p>
-                {order.photos.length > 0 ? (
-                  <div className="order-photos">
-                    {order.photos.map(photo => (
-                      <a
-                        key={photo._id}
-                        href={`http://dev.opnplatform.com/api/v1/file/${
-                          photo._id
-                        }`}
-                        target="_black"
-                      >
-                        <img
+                <div className="order-info-item">
+                  <p>
+                    <b>Product name:</b>
+                  </p>
+                  <div>{order.name ? order.name : '-'}</div>
+                </div>
+
+                <div className="order-info-item">
+                  <p>
+                    <b>Title of propose:</b>
+                  </p>
+                  <div>{order.proposeTitle ? order.proposeTitle : '-'}</div>
+                </div>
+
+                <div className="order-info-item">
+                  <p>
+                    <b>Currency/Price:</b>
+                  </p>
+                  <div>
+                    {order.currency === 'USD' ? '$' : '-'} / {order.price / 100}
+                  </div>
+                </div>
+
+                <div className="order-info-item">
+                  <p>
+                    <b>Action:</b>
+                  </p>
+                  <div>
+                    <Badge color="info">
+                      {order.purpose ? order.purpose : '-'}
+                    </Badge>
+                  </div>
+                </div>
+
+                <hr />
+
+                <div className="order-info-item">
+                  <p>
+                    <b>Company name:</b>
+                  </p>
+                  <div>
+                    {order.user && order.user.company_name
+                      ? order.user.company_name
+                      : '-'}
+                  </div>
+                </div>
+
+                <div className="order-info-item">
+                  <p>
+                    <b>Country:</b>
+                  </p>
+                  <div>{order.country ? order.country : '-'}</div>
+                </div>
+
+                <hr />
+
+                <div className="order-info-item">
+                  <p>
+                    <b>Delivery term:</b>
+                  </p>
+                  <div>{order.delivery.term ? order.delivery.term : '-'}</div>
+                </div>
+
+                <div className="order-info-item">
+                  <p>
+                    <b>Delivery variant:</b>
+                  </p>
+                  <div>
+                    {order.delivery.variant ? order.delivery.variant : '-'}
+                  </div>
+                </div>
+
+                <hr />
+
+                <div className="order-info-item">
+                  <p>
+                    <b>Announce of propose:</b>
+                  </p>
+                  <div>
+                    {moment(order.auction.start).format('DD.MM.YYYY HH:mm')}
+                  </div>
+                </div>
+
+                <div className="order-info-item">
+                  <p>
+                    <b>Requirements:</b>
+                  </p>
+                  <div>{order.requirements ? order.requirements : '-'}</div>
+                </div>
+
+                <div className="order-info-item">
+                  <p>
+                    <b>Description:</b>
+                  </p>
+                  <div>{order.description ? order.description : '-'}</div>
+                </div>
+
+                <hr />
+
+                <div className="order-info-item">
+                  <p>
+                    <b>Photos:</b>
+                  </p>
+                  {order.photos.length > 0 ? (
+                    <div className="order-photos">
+                      {order.photos.map(photo => (
+                        <a
                           key={photo._id}
-                          src={`http://dev.opnplatform.com/api/v1/file/${
+                          href={`http://dev.opnplatform.com/api/v1/file/${
                             photo._id
                           }`}
-                          width={100}
-                          height={100}
-                          style={{ objectFit: 'cover' }}
-                        />
-                      </a>
-                    ))}
-                  </div>
-                ) : (
-                  'No photos'
-                )}
+                          target="_black"
+                        >
+                          <img
+                            key={photo._id}
+                            src={`http://dev.opnplatform.com/api/v1/file/${
+                              photo._id
+                            }`}
+                            width={100}
+                            height={100}
+                            style={{ objectFit: 'cover' }}
+                          />
+                        </a>
+                      ))}
+                    </div>
+                  ) : (
+                    'No photos'
+                  )}
+                </div>
               </div>
 
-              <br />
-              <br />
-
-              <div>
-                <p>Documents:</p>
+              <div className="order-info-item">
+                <p>
+                  <b>Documents:</b>
+                </p>
                 {order.documents.length > 0 ? (
                   <div className="order-documents">
                     {order.documents.map(doc => (

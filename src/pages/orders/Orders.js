@@ -72,7 +72,7 @@ class Orders extends Component {
           <BreadcrumbItem active>Orders</BreadcrumbItem>
         </Breadcrumb>
 
-        <h1 className="page-title mb-lg">Orders</h1>
+        <h2 className="page-title mb-lg">Orders</h2>
 
         <Row>
           <Col sm={12}>
@@ -154,7 +154,6 @@ class Orders extends Component {
                             <small>
                               <span className="fw-semi-bold">Action:</span>
                               <span className="text-muted">
-                                {' '}
                                 <Badge color="info">
                                   {order.purpose ? order.purpose : '-'}
                                 </Badge>
