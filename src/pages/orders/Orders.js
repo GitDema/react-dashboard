@@ -132,16 +132,6 @@ class Orders extends Component {
                           <div className="mb-0">
                             <small>
                               <span className="fw-semi-bold">
-                                Title of propose:
-                              </span>
-                              <p className="text-muted">
-                                {order.proposeTitle ? order.proposeTitle : '-'}
-                              </p>
-                            </small>
-                          </div>
-                          <div className="mb-0">
-                            <small>
-                              <span className="fw-semi-bold">
                                 Currency/Price:
                               </span>
                               <p className="text-muted">
@@ -152,12 +142,12 @@ class Orders extends Component {
                           </div>
                           <div className="mb-0">
                             <small>
-                              <span className="fw-semi-bold">Action:</span>
-                              <span className="text-muted">
+                              <span className="fw-semi-bold">Propose:</span>
+                              <p className="text-muted">
                                 <Badge color="info">
                                   {order.purpose ? order.purpose : '-'}
                                 </Badge>
-                              </span>
+                              </p>
                             </small>
                           </div>
                         </td>
