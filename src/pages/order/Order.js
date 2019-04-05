@@ -25,6 +25,16 @@ class Order extends Component {
 
     this.state = {
       clientId: null,
+      order: null,
+      orderName: '',
+      orderRequirements: '',
+      orderDescription: '',
+      orderMainCategory: '',
+      orderSubCategory: '',
+      orderKindCategory: '',
+      imagePreviewUrl: [],
+      uploadedImgs: [],
+      docUrl: [],
     };
 
     this.handleInputs = this.handleInputs.bind(this);
@@ -54,11 +64,79 @@ class Order extends Component {
       order: this.props.order,
       orderName: this.props.order.name,
       orderRequirements: this.props.order.requirements,
+      orderDescription: this.props.order.description,
+      orderMainCategory: this.props.order.category.main,
+      orderSubCategory: this.props.order.category.sub,
+      orderKindCategory: this.props.order.category.kind,
     });
   }
 
   handleInputs = name => event => {
     this.setState({ [name]: event.target.value });
+  };
+
+  getHash = href => {
+    let path = href.split('/');
+    let res = path[path.length - 1];
+    return res;
+  };
+
+  uploadImges = event => {
+    let formData = new FormData();
+    formData.append('access_token', this.state.access_token);
+    formData.append('clientId', this.state.clientId);
+
+    let files = event.target.files;
+    for (var i = 0; i < files.length; i++) {
+      var file = files[i];
+      formData.append('img', file);
+    }
+
+    axios
+      .post('https://dev.opnplatform.com/api/v1/file/public/img', formData)
+      .then(res => {
+        if (res.status === 200) {
+          this.setState({
+            imagePreviewUrl: [
+              ...this.state.imagePreviewUrl,
+              res.data.result.url,
+            ],
+            uploadedImgs: [
+              ...this.state.uploadedImgs,
+              this.getHash(res.data.result.url),
+            ],
+          });
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+
+  uploadDoc = event => {
+    let docsData = new FormData();
+    docsData.append('access_token', this.state.access_token);
+    docsData.append('clientId', this.state.clientId);
+
+    let files = event.target.files;
+    for (var i = 0; i < files.length; i++) {
+      var file = files[i];
+      docsData.append('doc', file);
+      docsData.append('name', file.name);
+    }
+
+    axios
+      .post('https://dev.opnplatform.com/api/v1/file/public/doc', docsData)
+      .then(res => {
+        if (res.status === 200) {
+          this.setState({
+            docUrl: [...this.state.docUrl, res.data.result._id],
+          });
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
   };
 
   dispatchOrder = status => {
@@ -87,17 +165,33 @@ class Order extends Component {
   };
 
   editOrder = () => {
+    const data = {
+      clientId: this.state.clientId,
+      access_token: this.state.access_token,
+      title: this.state.orderName,
+      requirements: this.state.orderRequirements,
+      description: this.state.orderDescription,
+      category: {
+        main: this.state.orderMainCategory,
+        sub: this.state.orderSubCategory,
+        kind: this.state.orderKindCategory,
+      },
+    };
+
+    if (this.state.uploadedImgs.length > 0) {
+      data.photos = this.state.uploadedImgs;
+    }
+
+    if (this.state.docUrl.length > 0) {
+      data.documents = this.state.docUrl;
+    }
+
     axios
       .put(
         `https://dev.opnplatform.com/api/v1/orders/edit/${
           this.props.order._id
         }`,
-        {
-          clientId: this.state.clientId,
-          access_token: this.state.access_token,
-          title: this.state.orderName,
-          requirements: this.state.orderRequirements,
-        },
+        data,
       )
       .then(res => {
         if (res.status === 200) {
@@ -121,7 +215,15 @@ class Order extends Component {
   };
 
   render() {
-    const { order, orderName, orderRequirements } = this.state;
+    const {
+      order,
+      orderName,
+      orderRequirements,
+      orderDescription,
+      orderMainCategory,
+      orderSubCategory,
+      orderKindCategory,
+    } = this.state;
 
     if (!order) {
       return (
@@ -143,7 +245,7 @@ class Order extends Component {
               <h3>Available for change</h3>
               <br />
 
-              <form>
+              <div>
                 <label htmlFor="name">Product name:</label>
                 <br />
                 <input
@@ -151,6 +253,42 @@ class Order extends Component {
                   onChange={this.handleInputs('orderName')}
                   type="text"
                   id="name"
+                  style={inputsCss}
+                />
+                <br />
+                <br />
+
+                <label htmlFor="mainCategory">Main category:</label>
+                <br />
+                <input
+                  value={orderMainCategory}
+                  onChange={this.handleInputs('orderMainCategory')}
+                  type="text"
+                  id="mainCategory"
+                  style={inputsCss}
+                />
+                <br />
+                <br />
+
+                <label htmlFor="subCategory">Sub category:</label>
+                <br />
+                <input
+                  value={orderSubCategory}
+                  onChange={this.handleInputs('orderSubCategory')}
+                  type="text"
+                  id="subCategory"
+                  style={inputsCss}
+                />
+                <br />
+                <br />
+
+                <label htmlFor="kindCategory">Kind category:</label>
+                <br />
+                <input
+                  value={orderKindCategory}
+                  onChange={this.handleInputs('orderKindCategory')}
+                  type="text"
+                  id="kindCategory"
                   style={inputsCss}
                 />
                 <br />
@@ -175,13 +313,26 @@ class Order extends Component {
                 <br />
                 <br />
 
+                <label htmlFor="req">Description:</label>
+                <br />
+                <textarea
+                  value={orderDescription ? orderDescription : ''}
+                  onChange={this.handleInputs('orderDescription')}
+                  name="desc"
+                  id="desc"
+                  rows="8"
+                  style={inputsCss}
+                />
+                <br />
+                <br />
+
                 <label htmlFor="photos">Photos:</label>
                 <br />
                 <input
                   type="file"
                   id="photos"
                   accept="image/png, image/jpeg, image/gif"
-                  multiple
+                  onChange={this.uploadImges}
                 />
                 <br />
                 <br />
@@ -191,8 +342,8 @@ class Order extends Component {
                 <input
                   type="file"
                   id="docs"
-                  accept="application/doc, application/pdf, application/xls"
-                  multiple
+                  accept="application/pdf, application/xls"
+                  onChange={this.uploadDoc}
                 />
                 <br />
 
@@ -266,7 +417,7 @@ class Order extends Component {
                     )}
                   </div>
                 </div>
-              </form>
+              </div>
             </Widget>
           </Col>
 
@@ -300,6 +451,35 @@ class Order extends Component {
                     <Badge color="info">
                       {order.purpose ? order.purpose : '-'}
                     </Badge>
+                  </div>
+                </div>
+
+                <hr />
+
+                <div className="order-info-item">
+                  <p>
+                    <b>Main category:</b>
+                  </p>
+                  <div>
+                    <div>{order.category.main ? order.category.main : '-'}</div>
+                  </div>
+                </div>
+
+                <div className="order-info-item">
+                  <p>
+                    <b>Sub category:</b>
+                  </p>
+                  <div>
+                    <div>{order.category.sub ? order.category.sub : '-'}</div>
+                  </div>
+                </div>
+
+                <div className="order-info-item">
+                  <p>
+                    <b>Kind category:</b>
+                  </p>
+                  <div>
+                    <div>{order.category.kind ? order.category.kind : '-'}</div>
                   </div>
                 </div>
 
