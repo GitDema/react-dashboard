@@ -171,7 +171,7 @@ class Order extends Component {
       title: this.state.orderName,
       requirements: this.state.orderRequirements,
       description: this.state.orderDescription,
-      category: {
+      product: {
         main: this.state.orderMainCategory,
         sub: this.state.orderSubCategory,
         kind: this.state.orderKindCategory,
@@ -207,7 +207,12 @@ class Order extends Component {
               },
             )
             .then(res => {
-              this.setState({ order: res.data.result[0] });
+              this.setState({
+                order: res.data.result[0],
+                imagePreviewUrl: [],
+                uploadedImgs: [],
+                docUrl: [],
+              });
             });
         }
       })
@@ -294,16 +299,10 @@ class Order extends Component {
                 <br />
                 <br />
 
-                {/* <label htmlFor="param">Parameters:</label>
-                <br />
-                <input type="text" id="param" style={inputsCss} />
-                <br />
-                <br /> */}
-
                 <label htmlFor="req">Requirements:</label>
                 <br />
                 <textarea
-                  value={orderRequirements ? orderRequirements : ''}
+                  value={orderRequirements}
                   onChange={this.handleInputs('orderRequirements')}
                   name="req"
                   id="req"
@@ -316,7 +315,7 @@ class Order extends Component {
                 <label htmlFor="req">Description:</label>
                 <br />
                 <textarea
-                  value={orderDescription ? orderDescription : ''}
+                  value={orderDescription}
                   onChange={this.handleInputs('orderDescription')}
                   name="desc"
                   id="desc"
@@ -429,9 +428,16 @@ class Order extends Component {
               <div>
                 <div className="order-info-item">
                   <p>
+                    <b>Product ID:</b>
+                  </p>
+                  <div>{order.index}</div>
+                </div>
+
+                <div className="order-info-item">
+                  <p>
                     <b>Product name:</b>
                   </p>
-                  <div>{order.name ? order.name : '-'}</div>
+                  <div>{order.name}</div>
                 </div>
 
                 <div className="order-info-item">
@@ -439,7 +445,7 @@ class Order extends Component {
                     <b>Currency/Price:</b>
                   </p>
                   <div>
-                    {order.currency === 'USD' ? '$' : '-'} / {order.price / 100}
+                    {order.currency} / {order.price / 100}
                   </div>
                 </div>
 
@@ -448,9 +454,7 @@ class Order extends Component {
                     <b>Purpose:</b>
                   </p>
                   <div>
-                    <Badge color="info">
-                      {order.purpose ? order.purpose : '-'}
-                    </Badge>
+                    <Badge color="info">{order.purpose}</Badge>
                   </div>
                 </div>
 
@@ -461,7 +465,7 @@ class Order extends Component {
                     <b>Main category:</b>
                   </p>
                   <div>
-                    <div>{order.category.main ? order.category.main : '-'}</div>
+                    <div>{order.category.main}</div>
                   </div>
                 </div>
 
@@ -470,7 +474,7 @@ class Order extends Component {
                     <b>Sub category:</b>
                   </p>
                   <div>
-                    <div>{order.category.sub ? order.category.sub : '-'}</div>
+                    <div>{order.category.sub}</div>
                   </div>
                 </div>
 
@@ -479,7 +483,7 @@ class Order extends Component {
                     <b>Kind category:</b>
                   </p>
                   <div>
-                    <div>{order.category.kind ? order.category.kind : '-'}</div>
+                    <div>{order.category.kind}</div>
                   </div>
                 </div>
 
@@ -489,18 +493,14 @@ class Order extends Component {
                   <p>
                     <b>Company name:</b>
                   </p>
-                  <div>
-                    {order.user && order.user.company_name
-                      ? order.user.company_name
-                      : '-'}
-                  </div>
+                  <div>{order.user.company_name}</div>
                 </div>
 
                 <div className="order-info-item">
                   <p>
                     <b>Country:</b>
                   </p>
-                  <div>{order.country ? order.country : '-'}</div>
+                  <div>{order.country}</div>
                 </div>
 
                 <hr />
@@ -509,16 +509,14 @@ class Order extends Component {
                   <p>
                     <b>Delivery term:</b>
                   </p>
-                  <div>{order.delivery.term ? order.delivery.term : '-'}</div>
+                  <div>{order.delivery.term}</div>
                 </div>
 
                 <div className="order-info-item">
                   <p>
                     <b>Delivery variant:</b>
                   </p>
-                  <div>
-                    {order.delivery.variant ? order.delivery.variant : '-'}
-                  </div>
+                  <div>{order.delivery.variant}</div>
                 </div>
 
                 <hr />
@@ -536,14 +534,14 @@ class Order extends Component {
                   <p>
                     <b>Requirements:</b>
                   </p>
-                  <div>{order.requirements ? order.requirements : '-'}</div>
+                  <div>{order.requirements}</div>
                 </div>
 
                 <div className="order-info-item">
                   <p>
                     <b>Description:</b>
                   </p>
-                  <div>{order.description ? order.description : '-'}</div>
+                  <div>{order.description}</div>
                 </div>
 
                 <hr />

@@ -48,7 +48,7 @@ class Orders extends Component {
             clientId: this.state.clientId,
             access_token: this.state.access_token,
             count: 250,
-            offset: 1,
+            offset: 0,
           })
           .then(res => {
             this.setState({ orders: res.data.result });
@@ -87,7 +87,6 @@ class Orders extends Component {
                       <th>Company</th>
                       <th>Delivery</th>
                       <th>Announce of propose</th>
-                      {/* <th>Parameters</th> */}
                       <th>Requirements</th>
                       <th>Documents</th>
                       <th>Description</th>
@@ -95,8 +94,8 @@ class Orders extends Component {
                     </tr>
                   </thead>
                   <tbody>
-                    {orders.map((order, key) => (
-                      <tr key={order.created_at}>
+                    {orders.map(order => (
+                      <tr key={order.index}>
                         <td>
                           {order.photos.length > 0 && (
                             <img
@@ -118,15 +117,13 @@ class Orders extends Component {
                           <div className="mb-0">
                             <small>
                               <span className="fw-semi-bold">ID:</span>
-                              <p className="text-muted"> {key}</p>
+                              <p className="text-muted">{order.index}</p>
                             </small>
                           </div>
                           <div className="mb-0">
                             <small>
                               <span className="fw-semi-bold">Product:</span>
-                              <p className="text-muted">
-                                {order.name ? order.name : '-'}
-                              </p>
+                              <p className="text-muted">{order.name}</p>
                             </small>
                           </div>
                           <div className="mb-0">
@@ -135,8 +132,7 @@ class Orders extends Component {
                                 Currency/Price:
                               </span>
                               <p className="text-muted">
-                                {order.currency === 'USD' ? '$' : '-'}{' '}
-                                {order.price / 100}
+                                {order.currency} {order.price / 100}
                               </p>
                             </small>
                           </div>
@@ -144,9 +140,7 @@ class Orders extends Component {
                             <small>
                               <span className="fw-semi-bold">Propose:</span>
                               <p className="text-muted">
-                                <Badge color="info">
-                                  {order.purpose ? order.purpose : '-'}
-                                </Badge>
+                                <Badge color="info">{order.purpose}</Badge>
                               </p>
                             </small>
                           </div>
@@ -157,19 +151,14 @@ class Orders extends Component {
                             <small>
                               <span className="fw-semi-bold">Name:</span>
                               <p className="text-muted">
-                                {order.user && order.user.company_name
-                                  ? order.user.company_name
-                                  : '-'}
+                                {order.user.company_name}
                               </p>
                             </small>
                           </div>
                           <div className="mb-0">
                             <small>
                               <span className="fw-semi-bold">Country:</span>
-                              <p className="text-muted">
-                                {' '}
-                                {order.country ? order.country : '-'}
-                              </p>
+                              <p className="text-muted">{order.country}</p>
                             </small>
                           </div>
                         </td>
@@ -179,9 +168,7 @@ class Orders extends Component {
                             <small>
                               <span className="fw-semi-bold">Term:</span>
                               <p className="text-muted">
-                                {order.delivery.term
-                                  ? order.delivery.term
-                                  : '-'}
+                                {order.delivery.term}
                               </p>
                             </small>
                           </div>
@@ -189,9 +176,7 @@ class Orders extends Component {
                             <small>
                               <span className="fw-semi-bold">Variants:</span>
                               <p className="text-muted">
-                                {order.delivery.variant
-                                  ? order.delivery.variant
-                                  : '-'}
+                                {order.delivery.variant}
                               </p>
                             </small>
                           </div>
@@ -203,14 +188,11 @@ class Orders extends Component {
                           {moment(order.auction.start).format('HH:mm')}
                         </td>
 
-                        {/* <td>{order.parameters ? order.parameters : '-'}</td> */}
-
-                        <td>{order.requirements ? order.requirements : '-'}</td>
+                        <td>{order.requirements}</td>
 
                         <td>
                           <div className="mb-0">
                             <small>
-                              <span className="fw-semi-bold">Documents:</span>
                               {order.documents.map(doc => (
                                 <p
                                   key={doc.filename}
