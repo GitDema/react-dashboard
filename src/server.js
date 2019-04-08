@@ -30,7 +30,7 @@ import models from './data/models';
 import schema from './data/schema';
 import configureStore from './store/configureStore';
 import { setRuntimeVariable } from './actions/runtime';
-import { receiveLogin, receiveLogout } from './actions/user';
+// import { receiveLogin, receiveLogout } from './actions/user';
 import config from './config';
 import assets from './assets.json';
 import theme from './styles/theme.scss';
@@ -78,30 +78,30 @@ app.use(passport.initialize());
 if (__DEV__) {
   app.enable('trust proxy');
 }
-app.post('/login', (req, res) => {
-  // replace with real database check in production
-  // const user = graphql.find(req.login, req.password);
-  let user = false;
-  const login = req.body.login;
-  const password = req.body.password;
-  if (login === 'user' && password === 'password') {
-    user = { user, login };
-  }
+// app.post('/login', (req, res) => {
+//   // replace with real database check in production
+//   // const user = graphql.find(req.login, req.password);
+//   let user = false;
+//   const login = req.body.login;
+//   const password = req.body.password;
+//   if (login === 'user' && password === 'password') {
+//     user = { user, login };
+//   }
 
-  if (user) {
-    const expiresIn = 60 * 60 * 24 * 180; // 180 days
-    const token = jwt.sign(user, config.auth.jwt.secret, { expiresIn });
-    res.cookie('id_token', token, {
-      maxAge: 1000 * expiresIn,
-      httpOnly: false,
-    });
-    res.json({ id_token: token });
-  } else {
-    res
-      .status(401)
-      .json({ message: 'To login use user: "user", password: "password".' });
-  }
-});
+//   if (user) {
+//     const expiresIn = 60 * 60 * 24 * 180; // 180 days
+//     const token = jwt.sign(user, config.auth.jwt.secret, { expiresIn });
+//     res.cookie('id_token', token, {
+//       maxAge: 1000 * expiresIn,
+//       httpOnly: false,
+//     });
+//     res.json({ id_token: token });
+//   } else {
+//     res
+//       .status(401)
+//       .json({ message: 'To login use user: "user", password: "password".' });
+//   }
+// });
 
 //
 // Register API middleware
@@ -140,16 +140,6 @@ app.get('*', async (req, res, next) => {
     const store = configureStore(initialState, {
       fetch,
     });
-
-    if (req.user && req.user.login) {
-      store.dispatch(
-        receiveLogin({
-          id_token: req.cookies.id_token,
-        }),
-      );
-    } else {
-      store.dispatch(receiveLogout());
-    }
 
     store.dispatch(
       setRuntimeVariable({

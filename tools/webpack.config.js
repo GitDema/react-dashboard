@@ -11,7 +11,7 @@ import path from 'path';
 import webpack from 'webpack';
 import AssetsPlugin from 'assets-webpack-plugin';
 import nodeExternals from 'webpack-node-externals';
-import {BundleAnalyzerPlugin} from 'webpack-bundle-analyzer';
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import overrideRules from './lib/overrideRules';
 import pkg from '../package.json';
 
@@ -119,7 +119,7 @@ const config = {
           'isomorphic-style-loader',
           `css-loader?${
             isDebug ? 'sourceMap&' : 'minimize&'
-            }modules&localIdentName=[local]&importLoaders=2`,
+          }modules&localIdentName=[local]&importLoaders=2`,
           'sass-loader',
         ],
       },
@@ -130,10 +130,10 @@ const config = {
           'isomorphic-style-loader',
           `css-loader?${
             isDebug ? 'sourceMap&' : 'minimize&'
-            }modules&localIdentName=
+          }modules&localIdentName=
           ${
             isDebug ? '[name]_[local]_[hash:base64:3]' : '[hash:base64:4]'
-            }&importLoaders=2`,
+          }&importLoaders=2`,
           'sass-loader',
         ],
       },
@@ -201,14 +201,14 @@ const config = {
       ...(isDebug
         ? []
         : [
-          {
-            test: path.resolve(
-              __dirname,
-              '../node_modules/react-deep-force-update/lib/index.js',
-            ),
-            loader: 'null-loader',
-          },
-        ]),
+            {
+              test: path.resolve(
+                __dirname,
+                '../node_modules/react-deep-force-update/lib/index.js',
+              ),
+              loader: 'null-loader',
+            },
+          ]),
     ],
   },
 
@@ -255,6 +255,9 @@ const clientConfig = {
     // Define free variables
     // https://webpack.js.org/plugins/define-plugin/
     new webpack.DefinePlugin({
+      'process.env.API_URL': JSON.stringify(
+        'https://dev.opnplatform.com/api/v1',
+      ),
       'process.env.NODE_ENV': isDebug ? '"development"' : '"production"',
       'process.env.BROWSER': true,
       __DEV__: isDebug,
@@ -278,29 +281,29 @@ const clientConfig = {
     ...(isDebug
       ? []
       : [
-        // Decrease script evaluation time
-        // https://github.com/webpack/webpack/blob/master/examples/scope-hoisting/README.md
-        new webpack.optimize.ModuleConcatenationPlugin(),
+          // Decrease script evaluation time
+          // https://github.com/webpack/webpack/blob/master/examples/scope-hoisting/README.md
+          new webpack.optimize.ModuleConcatenationPlugin(),
 
-        // Minimize all JavaScript output of chunks
-        // https://github.com/mishoo/UglifyJS2#compressor-options
-        new webpack.optimize.UglifyJsPlugin({
-          compress: {
-            warnings: isVerbose,
-            unused: true,
-            dead_code: true,
-            screw_ie8: true,
-          },
-          mangle: {
-            screw_ie8: true,
-          },
-          output: {
-            comments: false,
-            screw_ie8: true,
-          },
-          sourceMap: true,
-        }),
-      ]),
+          // Minimize all JavaScript output of chunks
+          // https://github.com/mishoo/UglifyJS2#compressor-options
+          new webpack.optimize.UglifyJsPlugin({
+            compress: {
+              warnings: isVerbose,
+              unused: true,
+              dead_code: true,
+              screw_ie8: true,
+            },
+            mangle: {
+              screw_ie8: true,
+            },
+            output: {
+              comments: false,
+              screw_ie8: true,
+            },
+            sourceMap: true,
+          }),
+        ]),
 
     // Webpack Bundle Analyzer
     // https://github.com/th0r/webpack-bundle-analyzer
@@ -356,11 +359,10 @@ const serverConfig = {
           ...rule,
           options: {
             ...rule.options,
-            presets: rule.options.presets.map(
-              preset =>
-                preset[0] !== '@babel/preset-env'
-                  ? preset
-                  : [
+            presets: rule.options.presets.map(preset =>
+              preset[0] !== '@babel/preset-env'
+                ? preset
+                : [
                     '@babel/preset-env',
                     {
                       targets: {
@@ -407,6 +409,9 @@ const serverConfig = {
     // Define free variables
     // https://webpack.js.org/plugins/define-plugin/
     new webpack.DefinePlugin({
+      'process.env.API_URL': JSON.stringify(
+        'https://dev.opnplatform.com/api/v1',
+      ),
       'process.env.NODE_ENV': isDebug ? '"development"' : '"production"',
       'process.env.BROWSER': false,
       __DEV__: isDebug,

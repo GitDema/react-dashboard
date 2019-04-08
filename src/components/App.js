@@ -10,14 +10,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Route, Redirect, withRouter } from 'react-router';
-import { connect, Provider as ReduxProvider } from 'react-redux';
+import { Provider as ReduxProvider } from 'react-redux';
 
 import Bundle from '../core/Bundle';
 
-
 import loadRegister from 'bundle-loader?lazy!../pages/register/Register';
 import loadNotFound from 'bundle-loader?lazy!../pages/notFound/NotFound';
-
 
 import LayoutComponent from '../components/Layout/Layout';
 import LoginComponent from '../pages/login/Login';
@@ -38,31 +36,31 @@ const ContextType = {
   ...ReduxProvider.childContextTypes,
 };
 
-
-const PrivateRoute = ({ component, isAuthenticated, ...rest }) =>
+const PrivateRoute = ({ component, isAuthenticated, ...rest }) => (
   <Route
     {...rest}
     render={props =>
-      isAuthenticated
-        ? React.createElement(component, props)
-        : <Redirect
-            to={{
-              pathname: '/login',
-              state: { from: props.location },
-            }}
-          />}
-  />;
-
+      isAuthenticated ? (
+        React.createElement(component, props)
+      ) : (
+        <Redirect
+          to={{
+            pathname: '/login',
+            state: { from: props.location },
+          }}
+        />
+      )
+    }
+  />
+);
 
 class App extends React.PureComponent {
   static propTypes = {
     context: PropTypes.shape(ContextType),
-    isAuthenticated: PropTypes.bool,
   };
 
   static defaultProps = {
     context: null,
-    isAuthenticated: false,
   };
 
   static contextTypes = {
@@ -82,7 +80,11 @@ class App extends React.PureComponent {
       <Switch>
         <Route path="/" exact render={() => <Redirect to="/admin" />} />
         <PrivateRoute
-          isAuthenticated={this.props.isAuthenticated}
+          isAuthenticated={
+            typeof localStorage !== 'undefined'
+              ? !!localStorage.getItem('isAuthenticated')
+              : false
+          }
           path="/admin"
           component={LayoutComponent}
         />
@@ -94,10 +96,4 @@ class App extends React.PureComponent {
   }
 }
 
-function mapStateToProps(store) {
-  return {
-    isAuthenticated: store.auth.isAuthenticated,
-  };
-}
-
-export default withRouter(connect(mapStateToProps)(App));
+export default withRouter(App);

@@ -15,6 +15,8 @@ import moment from 'moment';
 
 import Widget from '../../components/Widget';
 
+const api_url = process.env.API_URL;
+
 const inputsCss = {
   width: '100%',
 };
@@ -24,7 +26,6 @@ class Order extends Component {
     super(props);
 
     this.state = {
-      clientId: null,
       order: null,
       orderName: '',
       orderRequirements: '',
@@ -42,32 +43,16 @@ class Order extends Component {
   }
 
   componentDidMount() {
-    axios
-      .get('https://dev.opnplatform.com/api/v1/client/id')
-      .then(res => {
-        this.setState({ clientId: res.data.result.clientId });
-      })
-      .then(() =>
-        axios
-          .post('https://dev.opnplatform.com/api/v1/user/login', {
-            clientId: this.state.clientId,
-            email: 'OPNAdmin@opnplatform.com',
-            password: '8wsBua9Q9a9Y',
-          })
-          .then(res => {
-            this.setState({ access_token: res.data.result.access_token.token });
-          }),
-      )
-      .catch(err => console.log(err));
+    const order = JSON.parse(localStorage.getItem('order'))
 
     this.setState({
-      order: this.props.order,
-      orderName: this.props.order.name,
-      orderRequirements: this.props.order.requirements,
-      orderDescription: this.props.order.description,
-      orderMainCategory: this.props.order.category.main,
-      orderSubCategory: this.props.order.category.sub,
-      orderKindCategory: this.props.order.category.kind,
+      order: order,
+      orderName: order.name,
+      orderRequirements: order.requirements,
+      orderDescription: order.description,
+      orderMainCategory: order.category.main,
+      orderSubCategory: order.category.sub,
+      orderKindCategory: order.category.kind,
     });
   }
 
@@ -83,8 +68,8 @@ class Order extends Component {
 
   uploadImges = event => {
     let formData = new FormData();
-    formData.append('access_token', this.state.access_token);
-    formData.append('clientId', this.state.clientId);
+    formData.append('access_token', localStorage.getItem('access_token'));
+    formData.append('clientId', localStorage.getItem('clientId'));
 
     let files = event.target.files;
     for (var i = 0; i < files.length; i++) {
@@ -93,7 +78,7 @@ class Order extends Component {
     }
 
     axios
-      .post('https://dev.opnplatform.com/api/v1/file/public/img', formData)
+      .post(`${api_url}/file/public/img`, formData)
       .then(res => {
         if (res.status === 200) {
           this.setState({
@@ -115,8 +100,8 @@ class Order extends Component {
 
   uploadDoc = event => {
     let docsData = new FormData();
-    docsData.append('access_token', this.state.access_token);
-    docsData.append('clientId', this.state.clientId);
+    docsData.append('access_token', localStorage.getItem('access_token'));
+    docsData.append('clientId', localStorage.getItem('clientId'));
 
     let files = event.target.files;
     for (var i = 0; i < files.length; i++) {
@@ -126,7 +111,7 @@ class Order extends Component {
     }
 
     axios
-      .post('https://dev.opnplatform.com/api/v1/file/public/doc', docsData)
+      .post(`${api_url}/file/public/doc`, docsData)
       .then(res => {
         if (res.status === 200) {
           this.setState({
@@ -146,16 +131,11 @@ class Order extends Component {
      */
 
     axios
-      .put(
-        `https://dev.opnplatform.com/api/v1/orders/dispatch/${
-          this.props.order._id
-        }`,
-        {
-          clientId: this.state.clientId,
-          access_token: this.state.access_token,
-          good: status,
-        },
-      )
+      .put(`${api_url}/orders/dispatch/${this.props.order._id}`, {
+        clientId: localStorage.getItem('clientId'),
+        access_token: localStorage.getItem('access_token'),
+        good: status,
+      })
       .then(res => {
         if (res.status === 200) {
           alert(res.data.result);
@@ -166,8 +146,8 @@ class Order extends Component {
 
   editOrder = () => {
     const data = {
-      clientId: this.state.clientId,
-      access_token: this.state.access_token,
+      clientId: localStorage.getItem('clientId'),
+      access_token: localStorage.getItem('access_token'),
       title: this.state.orderName,
       requirements: this.state.orderRequirements,
       description: this.state.orderDescription,
@@ -187,25 +167,15 @@ class Order extends Component {
     }
 
     axios
-      .put(
-        `https://dev.opnplatform.com/api/v1/orders/edit/${
-          this.props.order._id
-        }`,
-        data,
-      )
+      .put(`${api_url}/orders/edit/${this.props.order._id}`, data)
       .then(res => {
         if (res.status === 200) {
           alert(res.data.result);
           axios
-            .post(
-              `https://dev.opnplatform.com/api/v1/orders/get/2/${
-                this.props.order._id
-              }`,
-              {
-                clientId: this.state.clientId,
-                access_token: this.state.access_token,
-              },
-            )
+            .post(`${api_url}/orders/get/2/${this.props.order._id}`, {
+              clientId: localStorage.getItem('clientId'),
+              access_token: localStorage.getItem('access_token'),
+            })
             .then(res => {
               this.setState({
                 order: res.data.result[0],
@@ -614,6 +584,8 @@ class Order extends Component {
 const mapStateToProps = state => {
   return {
     order: state.order.order,
+    clientId: state.auth.clientId,
+    access_token: state.auth.access_token,
   };
 };
 

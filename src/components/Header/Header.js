@@ -30,7 +30,7 @@ import { NavLink } from 'react-router-dom';
 import Icon from '../Icon';
 
 import photo from '../../images/photo.jpg';
-import { logoutUser } from '../../actions/user';
+import { logOut } from '../../actions/user';
 import s from './Header.scss';
 
 class Header extends React.Component {
@@ -49,19 +49,21 @@ class Header extends React.Component {
     this.setState(prevState => ({
       isOpen: !prevState.isOpen,
     }));
-  }
+  };
 
-  doLogout = () => {
-    this.props.dispatch(logoutUser());
-  }
+  doLogout = () => this.props.logOut();
 
   render() {
-    const {isOpen} = this.state;
+    const { isOpen } = this.state;
     return (
       <Navbar className={s.root}>
         <Nav>
           <NavItem
-            className={cx('visible-xs mr-4 d-sm-up-none', s.headerIcon, s.sidebarToggler)}
+            className={cx(
+              'visible-xs mr-4 d-sm-up-none',
+              s.headerIcon,
+              s.sidebarToggler,
+            )}
             href="#"
             onClick={this.props.sidebarToggle}
           >
@@ -79,37 +81,43 @@ class Header extends React.Component {
         <Nav className="ml-auto">
           <NavItem className={cx('', s.headerIcon)}>
             <Button>
-              <Icon glyph="mail"/>
+              <Icon glyph="mail" />
               <span>8</span>
             </Button>
           </NavItem>
           <NavItem className={cx('', s.headerIcon)}>
             <Button>
-              <Icon glyph="notification"/>
+              <Icon glyph="notification" />
               <span>13</span>
             </Button>
           </NavItem>
           <NavItem className={cx('', s.headerIcon)}>
             <Button>
-              <Icon glyph="settings"/>
+              <Icon glyph="settings" />
             </Button>
           </NavItem>
           <Dropdown isOpen={isOpen} toggle={this.toggleDropdown}>
             <DropdownToggle nav>
-              <img className={cx('rounded-circle mr-sm', s.adminPhoto)} src={photo} alt="administrator" />
+              <img
+                className={cx('rounded-circle mr-sm', s.adminPhoto)}
+                src={photo}
+                alt="administrator"
+              />
               <span className="text-body">Administrator</span>
-              <i className={cx('fa fa-angle-down ml-sm', s.arrow, {[s.arrowActive]: isOpen})} />
+              <i
+                className={cx('fa fa-angle-down ml-sm', s.arrow, {
+                  [s.arrowActive]: isOpen,
+                })}
+              />
             </DropdownToggle>
-            <DropdownMenu style={{width: '100%'}}>
+            <DropdownMenu style={{ width: '100%' }}>
               <DropdownItem>
                 <NavLink to="/admin/posts">Posts</NavLink>
               </DropdownItem>
               <DropdownItem>
                 <NavLink to="/admin/profile">Profile</NavLink>
               </DropdownItem>
-              <DropdownItem onClick={this.doLogout}>
-                Logout
-              </DropdownItem>
+              <DropdownItem onClick={this.doLogout}>Logout</DropdownItem>
             </DropdownMenu>
           </Dropdown>
         </Nav>
@@ -123,4 +131,16 @@ function mapStateToProps(state) {
     init: state.runtime.initialNow,
   };
 }
-export default connect(mapStateToProps)(withStyles(s)(Header));
+
+function mapDispatchToProps(dispatch) {
+  return {
+    logOut: () => {
+      dispatch(logOut());
+    },
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(withStyles(s)(Header));

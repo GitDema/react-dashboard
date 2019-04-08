@@ -16,44 +16,28 @@ import axios from 'axios';
 import Widget from '../../components/Widget';
 import { setOrder } from '../../actions/order';
 
+const api_url = process.env.API_URL;
+
 class Orders extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      clientId: null,
+      orders: [],
     };
   }
 
   componentDidMount() {
     axios
-      .get('https://dev.opnplatform.com/api/v1/client/id')
-      .then(res => {
-        this.setState({ clientId: res.data.result.clientId });
+      .post(`${api_url}/orders/get/2/all`, {
+        clientId: localStorage.getItem('clientId'),
+        access_token: localStorage.getItem('access_token'),
+        count: 250,
+        offset: 0,
       })
-      .then(() =>
-        axios
-          .post('https://dev.opnplatform.com/api/v1/user/login', {
-            clientId: this.state.clientId,
-            email: 'OPNAdmin@opnplatform.com',
-            password: '8wsBua9Q9a9Y',
-          })
-          .then(res => {
-            this.setState({ access_token: res.data.result.access_token.token });
-          }),
-      )
-      .then(() =>
-        axios
-          .post('https://dev.opnplatform.com/api/v1/orders/get/2/all', {
-            clientId: this.state.clientId,
-            access_token: this.state.access_token,
-            count: 250,
-            offset: 0,
-          })
-          .then(res => {
-            this.setState({ orders: res.data.result });
-          }),
-      )
+      .then(res => {
+        this.setState({ orders: res.data.result });
+      })
       .catch(err => console.log(err));
   }
 
@@ -233,6 +217,12 @@ class Orders extends Component {
   }
 }
 
+const mapStateToProps = state => {
+  return {
+    clientId: state.auth.clientId,
+  };
+};
+
 const mapDispatchToProps = dispatch => {
   return {
     setOrder: order => {
@@ -242,6 +232,6 @@ const mapDispatchToProps = dispatch => {
 };
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps,
 )(Orders);

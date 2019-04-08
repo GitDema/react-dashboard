@@ -1,91 +1,78 @@
-export const LOGIN_REQUEST = 'LOGIN_REQUEST';
-export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
-export const LOGIN_FAILURE = 'LOGIN_FAILURE';
-export const LOGOUT_REQUEST = 'LOGOUT_REQUEST';
-export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS';
-export const LOGOUT_FAILURE = 'LOGOUT_FAILURE';
+import axios from 'axios';
 
-function requestLogin(creds) {
-  return {
-    type: LOGIN_REQUEST,
-    isFetching: true,
-    isAuthenticated: false,
-    creds,
-  };
-}
+const api_url = process.env.API_URL;
 
-export function receiveLogin(user) {
-  return {
-    type: LOGIN_SUCCESS,
-    isFetching: false,
-    isAuthenticated: true,
-    id_token: user.id_token,
-  };
-}
+export const SET_CLIENT_ID = 'SET_CLIENT_ID';
+export const SET_USER_TOKKEN = 'SET_USER_TOKKEN';
+export const LOG_OUT = 'LOG_OUT';
 
-function loginError(message) {
-  return {
-    type: LOGIN_FAILURE,
-    isFetching: false,
-    isAuthenticated: false,
-    message,
-  };
-}
-
-function requestLogout() {
-  return {
-    type: LOGOUT_REQUEST,
-    isFetching: true,
-    isAuthenticated: true,
-  };
-}
-
-export function receiveLogout() {
-  return {
-    type: LOGOUT_SUCCESS,
-    isFetching: false,
-    isAuthenticated: false,
-  };
-}
-
-// Logs the user out
-export function logoutUser() {
+export function getClientId() {
   return dispatch => {
-    dispatch(requestLogout());
-    localStorage.removeItem('id_token');
-    document.cookie = 'id_token=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-    dispatch(receiveLogout());
-  };
-}
+    return axios
+      .get(`${api_url}/client/id`)
+      .then(res => {
+        if (res.status === 200) {
+          const id = res.data.result.clientId;
 
-export function loginUser(creds) {
-  const config = {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    credentials: 'include',
-    body: `login=${creds.login}&password=${creds.password}`,
-  };
+          localStorage.setItem('clientId', id);
+          dispatch(setClientId(id));
 
-  return dispatch => {
-    // We dispatch requestLogin to kickoff the call to the API
-    dispatch(requestLogin(creds));
-
-    return fetch('/login', config)
-      .then(response => response.json().then(user => ({ user, response })))
-      .then(({ user, response }) => {
-        if (!response.ok) {
-          // If there was a problem, we want to
-          // dispatch the error condition
-          dispatch(loginError(user.message));
-          return Promise.reject(user);
+          return Promise.resolve(id);
         }
-        // in posts create new action and check http status, if malign logout
-        // If login was successful, set the token in local storage
-        localStorage.setItem('id_token', user.id_token);
-        // Dispatch the success action
-        dispatch(receiveLogin(user));
-        return Promise.resolve(user);
+        return Promise.reject(res);
       })
-      .catch(err => console.error('Error: ', err));
+      .catch(err => {
+        return Promise.reject(err);
+      });
+  };
+}
+
+function setClientId(id) {
+  return {
+    type: SET_CLIENT_ID,
+    id,
+  };
+}
+
+export function logIn(clientId, email, password) {
+  return dispatch => {
+    return axios
+      .post(`${api_url}/user/login`, {
+        clientId: clientId,
+        email: email,
+        password: password,
+      })
+      .then(res => {
+        if (res.status === 200) {
+          const tokken = res.data.result.access_token.token;
+
+          localStorage.setItem('access_token', tokken);
+          localStorage.setItem('isAuthenticated', true);
+          dispatch(setUserData(tokken));
+
+          return Promise.resolve(tokken);
+        }
+        return Promise.reject(res);
+      })
+      .catch(err => {
+        return Promise.reject(err);
+      });
+  };
+}
+
+function setUserData(tokken) {
+  return {
+    type: SET_USER_TOKKEN,
+    tokken,
+  };
+}
+
+export function logOut() {
+  localStorage.removeItem('access_token', false);
+  localStorage.removeItem('isAuthenticated', false);
+  localStorage.removeItem('order', null);
+  location.href = '/login';
+  return {
+    type: LOG_OUT,
   };
 }
