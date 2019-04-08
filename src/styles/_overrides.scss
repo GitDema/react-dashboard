@@ -78,7 +78,10 @@
   font-size: $font-size-base;
 
   @include box-shadow(none);
-  @include transition(border-color ease-in-out 0.15s, background-color ease-in-out 0.15s);
+  @include transition(
+    border-color ease-in-out 0.15s,
+    background-color ease-in-out 0.15s
+  );
 
   &:focus {
     @include box-shadow(none);
@@ -101,7 +104,11 @@
 // Buttons
 
 .btn-inverse {
-  @include button-variant($btn-inverse-color, $btn-inverse-bg, $btn-inverse-border);
+  @include button-variant(
+    $btn-inverse-color,
+    $btn-inverse-bg,
+    $btn-inverse-border
+  );
 }
 
 // Alerts
@@ -233,36 +240,73 @@ pre {
   }
 }
 
-
 // Order page
 
 .order-btns {
   display: flex;
-  justify-content: space-between
+  justify-content: space-between;
 }
 
 .order-photos {
-  max-width: 399px;
+  max-width: 400px;
   margin-top: 1em;
   display: flex;
   flex-flow: row wrap;
+  align-items: flex-start;
 }
 
-.order-photos a{
-  margin-bottom: 20px;
+.order-photos__item {
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1em;
+}
+
+.order-photos__item:nth-child(3n-7) {
+  margin: 0 20px 20px;
+}
+
+.order-photos__item p {
+  font-size: 12px;
+  text-decoration: underline;
   cursor: pointer;
 }
 
-.order-photos a{
-  margin-bottom: 20px;
+.order-photos__item p:hover {
+  text-decoration: none;
 }
 
-.order-photos a:nth-child(3n-7) {
-  margin: 0 20px 20px;
+.order-photos__item a {
+  margin-bottom: 2px;
+  cursor: pointer;
 }
 
 .order-documents {
   margin-top: 1em;
+}
+
+.order-documents__item {
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1em;
+  padding: 5px 10px;
+}
+
+.order-documents__item:nth-child(even) {
+  background-color: #eef7ff;
+}
+
+.order-documents p {
+  font-size: 12px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.order-documents p:hover {
+  text-decoration: none;
 }
 
 .order-info-item {

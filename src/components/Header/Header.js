@@ -35,8 +35,7 @@ import s from './Header.scss';
 
 class Header extends React.Component {
   static propTypes = {
-    sidebarToggle: PropTypes.func,
-    dispatch: PropTypes.func.isRequired,
+    sidebarToggle: PropTypes.func
   };
 
   static defaultProps = {

@@ -1,6 +1,5 @@
 /* eslint-disable jsx-a11y/label-has-for */
 import React, { Component, Fragment } from 'react';
-import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
   Row,
@@ -33,17 +32,32 @@ class Order extends Component {
       orderMainCategory: '',
       orderSubCategory: '',
       orderKindCategory: '',
-      imagePreviewUrl: [],
-      uploadedImgs: [],
+      orderPhotos: [],
       docUrl: [],
     };
 
     this.handleInputs = this.handleInputs.bind(this);
     this.dispatchOrder = this.dispatchOrder.bind(this);
+    this.handleRemovePhoto = this.handleRemovePhoto.bind(this);
+    this.handleRemoveDoc = this.handleRemoveDoc.bind(this);
   }
 
   componentDidMount() {
-    const order = JSON.parse(localStorage.getItem('order'))
+    this.updateData();
+  }
+
+  updateData = () => {
+    const order = JSON.parse(localStorage.getItem('order'));
+
+    const imagesId = [];
+    order.photos.length > 0
+      ? order.photos.map(photo => imagesId.push(photo._id))
+      : null;
+
+    const docsId = [];
+    order.documents.length > 0
+      ? order.documents.map(doc => docsId.push(doc._id))
+      : null;
 
     this.setState({
       order: order,
@@ -53,8 +67,64 @@ class Order extends Component {
       orderMainCategory: order.category.main,
       orderSubCategory: order.category.sub,
       orderKindCategory: order.category.kind,
+      orderPhotos: imagesId,
+      docUrl: docsId,
     });
-  }
+  };
+
+  handleRemovePhoto = photoId => {
+    const updatedList = this.state.orderPhotos;
+
+    updatedList.splice(updatedList.indexOf(photoId), 1);
+
+    axios
+      .put(`${api_url}/orders/edit/${this.state.order._id}`, {
+        clientId: localStorage.getItem('clientId'),
+        access_token: localStorage.getItem('access_token'),
+        photos: updatedList,
+      })
+      .then(res => {
+        if (res.status === 200) {
+          axios
+            .post(`${api_url}/orders/get/2/${this.state.order._id}`, {
+              clientId: localStorage.getItem('clientId'),
+              access_token: localStorage.getItem('access_token'),
+            })
+            .then(res => {
+              localStorage.setItem('order', JSON.stringify(res.data.result[0]));
+              this.updateData();
+            });
+        }
+      })
+      .catch(err => console.log(err));
+  };
+
+  handleRemoveDoc = docId => {
+    const updatedList = this.state.docUrl;
+
+    updatedList.splice(updatedList.indexOf(docId), 1);
+
+    axios
+      .put(`${api_url}/orders/edit/${this.state.order._id}`, {
+        clientId: localStorage.getItem('clientId'),
+        access_token: localStorage.getItem('access_token'),
+        documents: updatedList,
+      })
+      .then(res => {
+        if (res.status === 200) {
+          axios
+            .post(`${api_url}/orders/get/2/${this.state.order._id}`, {
+              clientId: localStorage.getItem('clientId'),
+              access_token: localStorage.getItem('access_token'),
+            })
+            .then(res => {
+              localStorage.setItem('order', JSON.stringify(res.data.result[0]));
+              this.updateData();
+            });
+        }
+      })
+      .catch(err => console.log(err));
+  };
 
   handleInputs = name => event => {
     this.setState({ [name]: event.target.value });
@@ -82,12 +152,8 @@ class Order extends Component {
       .then(res => {
         if (res.status === 200) {
           this.setState({
-            imagePreviewUrl: [
-              ...this.state.imagePreviewUrl,
-              res.data.result.url,
-            ],
-            uploadedImgs: [
-              ...this.state.uploadedImgs,
+            orderPhotos: [
+              ...this.state.orderPhotos,
               this.getHash(res.data.result.url),
             ],
           });
@@ -131,7 +197,7 @@ class Order extends Component {
      */
 
     axios
-      .put(`${api_url}/orders/dispatch/${this.props.order._id}`, {
+      .put(`${api_url}/orders/dispatch/${this.state.order._id}`, {
         clientId: localStorage.getItem('clientId'),
         access_token: localStorage.getItem('access_token'),
         good: status,
@@ -140,6 +206,7 @@ class Order extends Component {
         if (res.status === 200) {
           alert(res.data.result);
         }
+        this.updateData();
       })
       .catch(err => console.log(err));
   };
@@ -158,8 +225,8 @@ class Order extends Component {
       },
     };
 
-    if (this.state.uploadedImgs.length > 0) {
-      data.photos = this.state.uploadedImgs;
+    if (this.state.orderPhotos.length > 0) {
+      data.photos = this.state.orderPhotos;
     }
 
     if (this.state.docUrl.length > 0) {
@@ -167,22 +234,18 @@ class Order extends Component {
     }
 
     axios
-      .put(`${api_url}/orders/edit/${this.props.order._id}`, data)
+      .put(`${api_url}/orders/edit/${this.state.order._id}`, data)
       .then(res => {
         if (res.status === 200) {
           alert(res.data.result);
           axios
-            .post(`${api_url}/orders/get/2/${this.props.order._id}`, {
+            .post(`${api_url}/orders/get/2/${this.state.order._id}`, {
               clientId: localStorage.getItem('clientId'),
               access_token: localStorage.getItem('access_token'),
             })
             .then(res => {
-              this.setState({
-                order: res.data.result[0],
-                imagePreviewUrl: [],
-                uploadedImgs: [],
-                docUrl: [],
-              });
+              localStorage.setItem('order', JSON.stringify(res.data.result[0]));
+              this.updateData();
             });
         }
       })
@@ -523,23 +586,26 @@ class Order extends Component {
                   {order.photos.length > 0 ? (
                     <div className="order-photos">
                       {order.photos.map(photo => (
-                        <a
-                          key={photo._id}
-                          href={`http://dev.opnplatform.com/api/v1/file/${
-                            photo._id
-                          }`}
-                          target="_black"
-                        >
-                          <img
-                            key={photo._id}
-                            src={`http://dev.opnplatform.com/api/v1/file/${
+                        <div className="order-photos__item" key={photo._id}>
+                          <a
+                            href={`http://dev.opnplatform.com/api/v1/file/${
                               photo._id
                             }`}
-                            width={100}
-                            height={100}
-                            style={{ objectFit: 'cover' }}
-                          />
-                        </a>
+                            target="_black"
+                          >
+                            <img
+                              src={`http://dev.opnplatform.com/api/v1/file/${
+                                photo._id
+                              }`}
+                              width={100}
+                              height={100}
+                              style={{ objectFit: 'cover' }}
+                            />
+                          </a>
+                          <p onClick={() => this.handleRemovePhoto(photo._id)}>
+                            Remove
+                          </p>
+                        </div>
                       ))}
                     </div>
                   ) : (
@@ -555,7 +621,7 @@ class Order extends Component {
                 {order.documents.length > 0 ? (
                   <div className="order-documents">
                     {order.documents.map(doc => (
-                      <Fragment key={doc._id}>
+                      <div className="order-documents__item" key={doc._id}>
                         <a
                           href={`http://dev.opnplatform.com/api/v1/file/${
                             doc._id
@@ -564,9 +630,10 @@ class Order extends Component {
                         >
                           {doc.filename}
                         </a>
-                        <br />
-                        <br />
-                      </Fragment>
+                        <p onClick={() => this.handleRemoveDoc(doc._id)}>
+                          Remove
+                        </p>
+                      </div>
                     ))}
                   </div>
                 ) : (
@@ -581,12 +648,4 @@ class Order extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    order: state.order.order,
-    clientId: state.auth.clientId,
-    access_token: state.auth.access_token,
-  };
-};
-
-export default connect(mapStateToProps)(Order);
+export default Order;
