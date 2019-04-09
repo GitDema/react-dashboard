@@ -189,7 +189,7 @@ class Orders extends Component {
                         <td>{order.description}</td>
 
                         <td>
-                          <Link to={`/admin/order/${order._id}`}>
+                          <Link to={`/admin/order/${order.index}`}>
                             {/* eslint-disable-line */}
                             <Button
                               color="primary"
