@@ -87,11 +87,7 @@ class Orders extends Component {
                               width="60"
                               height="60"
                               style={{ objectFit: 'cover' }}
-                              src={`${location.protocol}//${
-                                location.hostname == 'localhost'
-                                  ? 'dev.opnplatform.com'
-                                  : location.hostname
-                              }/api/v1/file/${order.photos[0]._id}`}
+                              src={`${api_url}/file/${order.photos[0]._id}`}
                               alt="Product photo"
                             />
                           )}
