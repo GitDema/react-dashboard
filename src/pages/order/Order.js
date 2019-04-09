@@ -275,7 +275,7 @@ class Order extends Component {
           <BreadcrumbItem active>Order</BreadcrumbItem>
         </Breadcrumb>
 
-        <h2 className="page-title mb-lg">Edit order #{order.index+1}</h2>
+        <h2 className="page-title mb-lg">Edit order #{order.index}</h2>
 
         <Row>
           <Col sm="6">
