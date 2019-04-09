@@ -255,7 +255,7 @@ const clientConfig = {
     // Define free variables
     // https://webpack.js.org/plugins/define-plugin/
     new webpack.DefinePlugin({
-      'process.env.API_URL': JSON.stringify('https://opnplatform.com/api/v1'),
+      'process.env.API_URL': JSON.stringify('https://dev.opnplatform.com/api/v1'),
       'process.env.NODE_ENV': isDebug ? '"development"' : '"production"',
       'process.env.BROWSER': true,
       __DEV__: isDebug,
@@ -407,7 +407,7 @@ const serverConfig = {
     // Define free variables
     // https://webpack.js.org/plugins/define-plugin/
     new webpack.DefinePlugin({
-      'process.env.API_URL': JSON.stringify('https://opnplatform.com/api/v1'),
+      'process.env.API_URL': JSON.stringify('https://dev.opnplatform.com/api/v1'),
       'process.env.NODE_ENV': isDebug ? '"development"' : '"production"',
       'process.env.BROWSER': false,
       __DEV__: isDebug,
