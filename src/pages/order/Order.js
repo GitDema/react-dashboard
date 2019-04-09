@@ -588,15 +588,11 @@ class Order extends Component {
                       {order.photos.map(photo => (
                         <div className="order-photos__item" key={photo._id}>
                           <a
-                            href={`http://dev.opnplatform.com/api/v1/file/${
-                              photo._id
-                            }`}
+                            href={`${api_url}/file/${photo._id}`}
                             target="_black"
                           >
                             <img
-                              src={`http://dev.opnplatform.com/api/v1/file/${
-                                photo._id
-                              }`}
+                              src={`${api_url}/file/${photo._id}`}
                               width={100}
                               height={100}
                               style={{ objectFit: 'cover' }}
@@ -622,12 +618,7 @@ class Order extends Component {
                   <div className="order-documents">
                     {order.documents.map(doc => (
                       <div className="order-documents__item" key={doc._id}>
-                        <a
-                          href={`http://dev.opnplatform.com/api/v1/file/${
-                            doc._id
-                          }`}
-                          target="_black"
-                        >
+                        <a href={`${api_url}/file/${doc._id}`} target="_black">
                           {doc.filename}
                         </a>
                         <p onClick={() => this.handleRemoveDoc(doc._id)}>
