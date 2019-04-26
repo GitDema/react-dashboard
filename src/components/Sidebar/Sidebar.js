@@ -42,11 +42,11 @@ const Sidebar = () => (
         headerLink="/admin/tables"
         glyph="tables"
       />
-      <LinksGroup
+      {/* <LinksGroup
         header="Notifications"
         headerLink="/admin/notifications"
         glyph="notifications"
-      />
+      /> */}
       <LinksGroup
         header="Components"
         headerLink="/admin/components"
