@@ -16,7 +16,7 @@ import s from './Notifications.scss';
 const {Messenger} = window;
 
 
-function initializationMessengerCode() {
+export const initializationMessengerCode = () => {
   (function () {
     let $,
       FlatMessage,

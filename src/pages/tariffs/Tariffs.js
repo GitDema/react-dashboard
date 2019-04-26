@@ -17,65 +17,12 @@ import {
   BreadcrumbItem,
 } from 'reactstrap';
 import Widget from '../../components/Widget';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 /* request data */
 import axios from 'axios';
 const api_url = process.env.API_URL;
 
-/* Messages */
-import 'imports-loader?$=jquery,this=>window!jquery';
-import 'imports-loader?$=jquery,this=>window!messenger/build/js/messenger';
-const {Messenger} = window;
-
-
-function initializationMessengerCode() {
-  (function () {
-    let $,
-      FlatMessage,
-      spinner_template,
-      __hasProp = {}.hasOwnProperty,
-      __extends = function (child, parent) {
-        for (const key in parent) {
-          if (__hasProp.call(parent, key)) child[key] = parent[key];
-        }
-
-        function ctor() {
-          this.constructor = child;
-        }
-
-        ctor.prototype = parent.prototype;
-        child.prototype = new ctor();
-        child.__super__ = parent.prototype;
-        return child;
-      };
-
-    $ = jQuery;
-
-    spinner_template = '<div class="messenger-spinner">\n    <span class="messenger-spinner-side messenger-spinner-side-left">\n        <span class="messenger-spinner-fill"></span>\n    </span>\n    <span class="messenger-spinner-side messenger-spinner-side-right">\n        <span class="messenger-spinner-fill"></span>\n    </span>\n</div>';
-
-    FlatMessage = (function (_super) {
-      __extends(FlatMessage, _super);
-
-      function FlatMessage() {
-        return FlatMessage.__super__.constructor.apply(this, arguments);
-      }
-
-      FlatMessage.prototype.template = function (opts) {
-        let $message;
-        $message = FlatMessage.__super__.template.apply(this, arguments);
-        $message.append($(spinner_template));
-        return $message;
-      };
-
-      return FlatMessage;
-    }(Messenger.Message));
-
-    Messenger.themes.air = {
-      Message: FlatMessage,
-    };
-  }).call(window);
-}
-/* Messages  ends */
 
 
 export default class Tariffs extends Component {
@@ -92,38 +39,18 @@ export default class Tariffs extends Component {
   componentDidMount = () => {
     /* Get Data */
     this.getCompaniesList();
-    /* Init messages */
-    initializationMessengerCode();
-    Messenger.options = {
-      extraClasses: this.state.locationClasses,
-      theme: 'air',
-    };
+   
   }
+
+  createNotification = (type, message) => {
+    console.log(message)
+    alert(message)
+  };
   
   toggle = () => {
     this.setState({
       dropdownOpen: !this.state.dropdownOpen
     });
-  }
-
-  addErrorNotification = (message) => {
-    Messenger().post({
-      extraClasses: this.state.locationClasses,
-      message: message,
-      type: 'error',
-      showCloseButton: true,
-    });
-    return false;
-  }
-
-  addSuccessNotification = (message) => {
-    Messenger().post({
-      extraClasses: this.state.locationClasses,
-      message: message,
-      type: 'success',
-      showCloseButton: true,
-    });
-    return false;
   }
 
   getCompaniesList = () => {
@@ -134,7 +61,6 @@ export default class Tariffs extends Component {
       offset: 0,
     })
     .then(res => {
-      console.log(res);
       if(res.status === 200){
         this.setState({
           companies: res.data.result
@@ -143,7 +69,6 @@ export default class Tariffs extends Component {
     })
     .catch(error => {
       console.log(error)
-      this.addErrorNotification(error.response.message)
     })
   }
 
@@ -155,21 +80,14 @@ export default class Tariffs extends Component {
       company: id
     })
     .then(res => {
-      console.log(res);
+      () => NotificationManager.success(res.data.result);
       if(res.status === 200){
-        this.setState({
-          message: res.data.result
-        })
-        this.addSuccessNotification(res.data.result)
+        this.createNotification('success', res.data.result)
+        this.getCompaniesList()
       }
     })
     .catch(error => {
-      console.log(error.response.data);
-      if(error.response.data){
-        this.addErrorNotification(error.response.data.error_message[0].message)
-      } else {
-        this.addErrorNotification(error.response.data.error_message)
-      }
+      console.log(error)
     })
   }
     
