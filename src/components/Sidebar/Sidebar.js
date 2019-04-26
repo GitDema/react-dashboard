@@ -18,11 +18,17 @@ const Sidebar = () => (
     </header>
     <ul className={s.nav}>
       <LinksGroup
-        header="Balance"
-        headerLink="/admin/balance"
-        glyph="dashboard"
+        header="Tariff plans"
+        headerLink="/admin/tariffs"
+        glyph="user"
       />
-      <LinksGroup header="Orders" headerLink="/admin/orders" glyph="tables" />
+
+      <LinksGroup 
+        header="Orders" 
+        headerLink="/admin/orders" 
+        glyph="tables" 
+      />
+
       {/* <LinksGroup header="Order" headerLink="/admin/order" glyph="typography" /> */}
       <hr />
       <LinksGroup header="Dashboard" headerLink="/admin" glyph="dashboard" />
