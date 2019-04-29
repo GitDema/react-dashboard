@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/label-has-for */
 import React, { Component, Fragment } from 'react';
+import { refresh } from '../../actions/user';
 import { Link } from 'react-router-dom';
 import {
   Row,

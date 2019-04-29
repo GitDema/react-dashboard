@@ -10,6 +10,7 @@ import {
   Breadcrumb,
   BreadcrumbItem,
 } from 'reactstrap';
+import { refresh } from '../../actions/user';
 import Widget from '../../components/Widget';
 import NotificationSystem from 'react-notification-system';
 import axios from 'axios';
@@ -70,8 +71,11 @@ export default class Tariffs extends Component {
           });
         }
       })
-      .catch(error => {
-        console.log(error);
+      .catch(err => {
+        console.log(err);
+        if(err.response.status === 401 || err.respponse.status === 400){
+          refresh();
+        }
       });
   };
 

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { refresh } from '../../actions/user';
 import {
   Row,
   Col,
@@ -38,7 +39,11 @@ class Orders extends Component {
       .then(res => {
         this.setState({ orders: res.data.result });
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        if(err.response.status === 401 || err.respponse.status === 400){
+          refresh();
+        }
+      });
   }
 
   render() {
