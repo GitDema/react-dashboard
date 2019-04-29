@@ -13,7 +13,8 @@ import axios from 'axios';
 import moment from 'moment';
 
 import Widget from '../../components/Widget';
-
+import NotificationSystem from 'react-notification-system';
+/* Api url */
 const api_url = process.env.API_URL;
 
 const inputsCss = {
@@ -44,7 +45,14 @@ class Order extends Component {
 
   componentDidMount() {
     this.updateData();
-  }
+  };
+  
+  createNotification = (type, message) => {
+    this.refs.tariffNotification.addNotification({
+      message: message,
+      level: type,
+    });
+  };
 
   updateData = () => {
     const order = JSON.parse(localStorage.getItem('order'));
@@ -84,7 +92,9 @@ class Order extends Component {
         photos: updatedList,
       })
       .then(res => {
+        () => NotificationManager.success(res.data.result);
         if (res.status === 200) {
+          this.createNotification('success', res.data.result);
           axios
             .post(`${api_url}/orders/get/2/${this.state.order._id}`, {
               clientId: localStorage.getItem('clientId'),
@@ -203,8 +213,9 @@ class Order extends Component {
         good: status,
       })
       .then(res => {
+        () => NotificationManager.success(res.data.result);
         if (res.status === 200) {
-          alert(res.data.result);
+          this.createNotification('success', res.data.result);
         }
         this.updateData();
       })
@@ -236,8 +247,9 @@ class Order extends Component {
     axios
       .put(`${api_url}/orders/edit/${this.state.order._id}`, data)
       .then(res => {
+        () => NotificationManager.success(res.data.result);
         if (res.status === 200) {
-          alert(res.data.result);
+          this.createNotification('success', res.data.result);
           axios
             .post(`${api_url}/orders/get/2/${this.state.order._id}`, {
               clientId: localStorage.getItem('clientId'),
@@ -634,6 +646,7 @@ class Order extends Component {
             </Widget>
           </Col>
         </Row>
+        <NotificationSystem ref="tariffNotification" />
       </div>
     );
   }

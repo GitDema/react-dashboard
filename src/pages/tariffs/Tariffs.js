@@ -34,13 +34,13 @@ export default class Tariffs extends Component {
     this._tariffNotification = this.refs.tariffNotification;
   };
 
-  _addNotification = event => {
+ /*  _addNotification = event => {
     event.preventDefault();
     this._tariffNotification.addNotification({
       message: 'Notification message',
       level: 'success',
     });
-  };
+  }; */
 
   createNotification = (type, message) => {
     this._tariffNotification.addNotification({

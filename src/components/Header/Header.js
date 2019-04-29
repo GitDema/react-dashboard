@@ -29,7 +29,7 @@ import { NavLink } from 'react-router-dom';
 
 import Icon from '../Icon';
 
-import photo from '../../images/photo.jpg';
+import photo from '../../images/photo.svg';
 import { logOut } from '../../actions/user';
 import s from './Header.scss';
 
@@ -78,7 +78,7 @@ class Header extends React.Component {
           </NavItem>
         </Nav>
         <Nav className="ml-auto">
-          <NavItem className={cx('', s.headerIcon)}>
+          {/* <NavItem className={cx('', s.headerIcon)}>
             <Button>
               <Icon glyph="mail" />
               <span>8</span>
@@ -89,7 +89,7 @@ class Header extends React.Component {
               <Icon glyph="notification" />
               <span>13</span>
             </Button>
-          </NavItem>
+          </NavItem> */}
           <NavItem className={cx('', s.headerIcon)}>
             <Button>
               <Icon glyph="settings" />
