@@ -10,7 +10,7 @@ import {
   Breadcrumb,
   BreadcrumbItem,
 } from 'reactstrap';
-import { refresh } from '../../actions/user';
+import { logOut } from '../../actions/user';
 import { connect } from 'react-redux';
 import Widget from '../../components/Widget';
 import NotificationSystem from 'react-notification-system';
@@ -76,7 +76,7 @@ class Tariffs extends Component {
         if(err.response !== undefined 
           && err.response.status !== undefined){
           if(err.response.status === 401 || err.respponse.status === 400){
-            this.props.refresh();
+            this.props.logOut();
           }
         }
       });
@@ -208,8 +208,8 @@ class Tariffs extends Component {
 
 const mapDispatchToProps = dispatch => {
   return{
-    refresh: () => {
-      dispatch(refresh())
+    logOut: () => {
+      dispatch(logOut())
     }
   }
 }

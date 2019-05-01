@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/label-has-for */
 import React, { Component, Fragment } from 'react';
-import { refresh } from '../../actions/user';
+import { logOut } from '../../actions/user';
 import { Link } from 'react-router-dom';
 import {
   Row,
@@ -46,6 +46,7 @@ class Order extends Component {
 
   componentDidMount() {
     this.updateData();
+    console.log(JSON.parse(localStorage.getItem('order')))
   };
   
   createNotification = (type, message) => {
@@ -70,14 +71,14 @@ class Order extends Component {
 
     this.setState({
       order: order,
-      orderName: order.name,
-      orderRequirements: order.requirements,
-      orderDescription: order.description,
-      orderMainCategory: order.category.main,
-      orderSubCategory: order.category.sub,
-      orderKindCategory: order.category.kind,
-      orderPhotos: imagesId,
-      docUrl: docsId,
+      orderName: order.name || "",
+      orderRequirements: order.requirements || "",
+      orderDescription: order.description || "",
+      orderMainCategory:  order.category !== null ?  order.category.main : "",
+      orderSubCategory: order.category !== null ? order.category.sub : "",
+      orderKindCategory: order.category !== null ? order.category.kind : "",
+      orderPhotos: imagesId || "",
+      docUrl: docsId || "",
     });
   };
 
@@ -107,7 +108,11 @@ class Order extends Component {
             });
         }
       })
-      .catch(err => console.log(err));
+      .catch(err =>{
+        if(err.response.status === 401 || err.respponse.status === 400){
+          this.props.logOut();
+        }
+      });
   };
 
   handleRemoveDoc = docId => {
@@ -134,7 +139,11 @@ class Order extends Component {
             });
         }
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        if(err.response.status === 401 || err.respponse.status === 400){
+          this.props.logOut();
+        }
+      });
   };
 
   handleInputs = name => event => {
@@ -170,8 +179,10 @@ class Order extends Component {
           });
         }
       })
-      .catch(error => {
-        console.log(error);
+      .catch(err => {
+        if(err.response.status === 401 || err.respponse.status === 400){
+          this.props.logOut();
+        }
       });
   };
 
@@ -196,8 +207,10 @@ class Order extends Component {
           });
         }
       })
-      .catch(error => {
-        console.log(error);
+      .catch(err => {
+        if(err.response.status === 401 || err.respponse.status === 400){
+          this.props.logOut();
+        }
       });
   };
 
@@ -220,7 +233,11 @@ class Order extends Component {
         }
         this.updateData();
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        if(err.response.status === 401 || err.respponse.status === 400){
+          this.props.logOut();
+        }
+      });
   };
 
   editOrder = () => {
@@ -262,7 +279,11 @@ class Order extends Component {
             });
         }
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        if(err.response.status === 401 || err.respponse.status === 400){
+          this.props.logOut();
+        }
+      });
   };
 
   render() {
@@ -511,7 +532,7 @@ class Order extends Component {
                     <b>Main category:</b>
                   </p>
                   <div>
-                    <div>{order.category.main}</div>
+                    <div>{ order.category !== null ?  order.category.main : ""}</div>
                   </div>
                 </div>
 
@@ -520,7 +541,7 @@ class Order extends Component {
                     <b>Sub category:</b>
                   </p>
                   <div>
-                    <div>{order.category.sub}</div>
+                    <div>{ order.category !== null ?  order.category.sub : ""}</div>
                   </div>
                 </div>
 
@@ -529,7 +550,7 @@ class Order extends Component {
                     <b>Kind category:</b>
                   </p>
                   <div>
-                    <div>{order.category.kind}</div>
+                    <div>{ order.category !== null ?  order.category.kind : ""}</div>
                   </div>
                 </div>
 
@@ -653,4 +674,12 @@ class Order extends Component {
   }
 }
 
-export default Order;
+const mapDispatchToProps = dispatch => {
+  return{
+    logOut: () => {
+      dispatch(logOut())
+    }
+  }
+}
+
+export default connect(null, mapDispatchToProps)(Order);

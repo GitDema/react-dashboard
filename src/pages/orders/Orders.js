@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { refresh } from '../../actions/user';
 import {
   Row,
   Col,
@@ -43,7 +42,7 @@ class Orders extends Component {
         if(err.response !== undefined 
           && err.response.status !== undefined){
           if(err.response.status === 401 || err.response.status === 400){
-            refresh();
+            this.props.logOut();
           }
         }
       });
@@ -231,6 +230,9 @@ const mapDispatchToProps = dispatch => {
   return {
     setOrder: order => {
       dispatch(setOrder(order));
+    },
+    logOut: () => {
+      dispatch(logOut(order));
     },
   };
 };
