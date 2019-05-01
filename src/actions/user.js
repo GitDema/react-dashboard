@@ -76,8 +76,9 @@ function setUserData(tokken) {
 
 export function refresh() {
   return dispatch => {
+
     return axios
-      .post(`${api_url}/user/login`, {
+      .post(`${api_url}/user/refresh`, {
         clientId: localStorage.getItem('clientId'),
         refresh_token: localStorage.getItem('refresh_token'),
       })

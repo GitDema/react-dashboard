@@ -40,8 +40,11 @@ class Orders extends Component {
         this.setState({ orders: res.data.result });
       })
       .catch(err => {
-        if(err.response.status === 401 || err.respponse.status === 400){
-          refresh();
+        if(err.response !== undefined 
+          && err.response.status !== undefined){
+          if(err.response.status === 401 || err.response.status === 400){
+            refresh();
+          }
         }
       });
   }

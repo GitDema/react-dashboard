@@ -11,13 +11,14 @@ import {
   BreadcrumbItem,
 } from 'reactstrap';
 import { refresh } from '../../actions/user';
+import { connect } from 'react-redux';
 import Widget from '../../components/Widget';
 import NotificationSystem from 'react-notification-system';
 import axios from 'axios';
 
 const api_url = process.env.API_URL;
 
-export default class Tariffs extends Component {
+class Tariffs extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -72,9 +73,11 @@ export default class Tariffs extends Component {
         }
       })
       .catch(err => {
-        console.log(err);
-        if(err.response.status === 401 || err.respponse.status === 400){
-          refresh();
+        if(err.response !== undefined 
+          && err.response.status !== undefined){
+          if(err.response.status === 401 || err.respponse.status === 400){
+            this.props.refresh();
+          }
         }
       });
   };
@@ -202,3 +205,13 @@ export default class Tariffs extends Component {
     );
   }
 }
+
+const mapDispatchToProps = dispatch => {
+  return{
+    refresh: () => {
+      dispatch(refresh())
+    }
+  }
+}
+
+export default connect(null, mapDispatchToProps)(Tariffs);
