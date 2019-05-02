@@ -19,6 +19,8 @@ import Container from './DropdownContainer';
 
 import Widget from '../../components/Widget';
 import NotificationSystem from 'react-notification-system';
+/* Api url */
+const api_url = process.env.API_URL;
 
 const inputsCss = {
   width: '100%',
