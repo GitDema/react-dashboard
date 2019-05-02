@@ -26,7 +26,14 @@ const Sidebar = () => (
       <LinksGroup 
         header="Orders" 
         headerLink="/admin/orders" 
+        headerLink="/admin/orders" 
         glyph="tables" 
+      />  
+
+      <LinksGroup 
+        header="Categories" 
+        headerLink="/admin/categories" 
+        glyph="list" 
       />
 
       {/* <LinksGroup header="Order" headerLink="/admin/order" glyph="typography" /> */}

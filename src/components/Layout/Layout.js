@@ -37,6 +37,7 @@ import Order from '../../pages/order/Order';
 import Orders from '../../pages/orders/Orders';
 
 import Tariffs from '../../pages/tariffs/Tariffs';
+import Categories from '../../pages/categories/Categories';
 
 // Dashboard component is loaded directly as an example of server side rendering
 import Dashboard from '../../pages/dashboard/Dashboard';
@@ -116,6 +117,7 @@ class Layout extends React.Component {
               <Route path="/admin/orders" exact component={Orders} />
               <Route path="/admin/order/:id" exact component={Order} />
               <Route path="/admin/tariffs" exact component={Tariffs} />
+              <Route path="/admin/categories" exact component={Categories} />
               <Route
                 path="/admin/balance"
                 exact

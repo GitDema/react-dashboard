@@ -10,7 +10,7 @@ import {
   Col, 
   Badge,
   Breadcrumb, 
-  BreadcrumbItem
+  BreadcrumbItem,
 } from 'reactstrap';
 import classnames from 'classnames';
 

@@ -57,6 +57,7 @@ class Html extends React.Component {
           <meta name="keywords" content={keywords} />
           <meta name="author" content={author} />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <link href="https://unpkg.com/react-dropdown-tree-select/dist/styles.css" rel="stylesheet" />
           <link rel="shortcut icon" href="favicon.ico" />
           {styles.map(style => (
             <style
@@ -101,6 +102,7 @@ class Html extends React.Component {
               defer
             />
           )}
+          <script src="https://unpkg.com/react-dropdown-tree-select/dist/react-dropdown-tree-select.js"></script>
         </body>
       </html>
     );

@@ -11,6 +11,7 @@ import partnership from './partnership.svg';
 import stack from './stack.svg';
 import user from './user.svg';
 import database from './database.svg';
+import list from './list.svg';
 
 export default { 
   components,
@@ -26,4 +27,5 @@ export default {
   stack,
   user,
   database,
+  list
 }

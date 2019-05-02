@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
@@ -15,6 +16,7 @@ import axios from 'axios';
 
 import Widget from '../../components/Widget';
 import { setOrder } from '../../actions/order';
+import { logOut } from '../../actions/user';
 
 const api_url = process.env.API_URL;
 
@@ -41,9 +43,11 @@ class Orders extends Component {
       .catch(err => {
         if(err.response !== undefined 
           && err.response.status !== undefined){
-          if(err.response.status === 401 || err.response.status === 400){
+          if(err.response.status === 401 ){
             this.props.logOut();
           }
+        } else {
+          console.log(err)
         }
       });
   }
@@ -232,7 +236,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(setOrder(order));
     },
     logOut: () => {
-      dispatch(logOut(order));
+      dispatch(logOut());
     },
   };
 };

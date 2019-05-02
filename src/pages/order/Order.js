@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/label-has-for */
 import React, { Component, Fragment } from 'react';
 import { logOut } from '../../actions/user';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
   Row,
@@ -13,10 +14,11 @@ import {
 import axios from 'axios';
 import moment from 'moment';
 
+/* Catrgory tree */
+import Container from './DropdownContainer';
+
 import Widget from '../../components/Widget';
 import NotificationSystem from 'react-notification-system';
-/* Api url */
-const api_url = process.env.API_URL;
 
 const inputsCss = {
   width: '100%',
@@ -32,21 +34,25 @@ class Order extends Component {
       orderRequirements: '',
       orderDescription: '',
       orderMainCategory: '',
-      orderSubCategory: '',
-      orderKindCategory: '',
       orderPhotos: [],
       docUrl: [],
+      categories: [],
+      catPath: [],
+      tree: [],
     };
 
     this.handleInputs = this.handleInputs.bind(this);
     this.dispatchOrder = this.dispatchOrder.bind(this);
     this.handleRemovePhoto = this.handleRemovePhoto.bind(this);
     this.handleRemoveDoc = this.handleRemoveDoc.bind(this);
+    this.onChange = this.onChange.bind(this);
+
   }
 
   componentDidMount() {
     this.updateData();
-    console.log(JSON.parse(localStorage.getItem('order')))
+    setTimeout(this.getCategoryList, 500);
+    setTimeout(this.setCatToData, 1000);
   };
   
   createNotification = (type, message) => {
@@ -109,8 +115,13 @@ class Order extends Component {
         }
       })
       .catch(err =>{
-        if(err.response.status === 401 || err.respponse.status === 400){
-          this.props.logOut();
+        if(err.response !== undefined 
+          && err.response.status !== undefined){
+          if(err.response.status === 401 ){
+            this.props.logOut();
+          }
+        } else {
+          console.log(err)
         }
       });
   };
@@ -140,11 +151,88 @@ class Order extends Component {
         }
       })
       .catch(err => {
-        if(err.response.status === 401 || err.respponse.status === 400){
-          this.props.logOut();
+        if(err.response !== undefined 
+          && err.response.status !== undefined){
+          if(err.response.status === 401 ){
+            this.props.logOut();
+          }
+        } else {
+          console.log(err)
         }
       });
   };
+
+/* Categories functions */
+
+  getCategoryList = () =>{
+    axios.post(`${api_url}/category/list/all`, {
+      clientId: localStorage.getItem('clientId'),
+      access_token: localStorage.getItem('access_token'),
+    })
+    .then(res => {
+        this.setState({
+            categories:  res.data.result
+        }, this.getCategoryPath(this.state.order.category._id))
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  }
+
+  setCatToData = () => {
+    let res = [];
+    let children = [];
+    let subCh = [];
+   this.state.categories.map(cat => {
+    children = [];
+     cat.children !== []
+      ? cat.children.map(ch => {
+        subCh = [];
+        ch.children !== []
+        ? ch.children.map(sub => { 
+          subCh = [...subCh, {
+            label: sub.name,
+            value: sub._id,
+           }]
+        })
+        : []
+        children = [...children, {
+          label: ch.name,
+          value: ch._id,
+          children: subCh,
+         }]
+        })
+      : []
+    res = [...res, {
+      label: cat.name,
+      value: cat._id,
+      children: children,
+     }]
+   })
+   this.setState({
+     tree: res
+   })
+   
+  }
+
+  getCategoryPath = (id) => {
+    axios.post(`${api_url}/category/path`, {
+      clientId: localStorage.getItem('clientId'),
+      access_token: localStorage.getItem('access_token'),
+      id: id
+    })
+    .then(res => {
+      console.log(res)
+      this.setState({
+        catPath: res.data.result.stringified.split('///').join(' > ')
+      })
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  }
+
+/* Categories functions ends */
 
   handleInputs = name => event => {
     this.setState({ [name]: event.target.value });
@@ -180,8 +268,13 @@ class Order extends Component {
         }
       })
       .catch(err => {
-        if(err.response.status === 401 || err.respponse.status === 400){
-          this.props.logOut();
+        if(err.response !== undefined 
+          && err.response.status !== undefined){
+          if(err.response.status === 401 ){
+            this.props.logOut();
+          }
+        } else {
+          console.log(err)
         }
       });
   };
@@ -208,8 +301,13 @@ class Order extends Component {
         }
       })
       .catch(err => {
-        if(err.response.status === 401 || err.respponse.status === 400){
-          this.props.logOut();
+        if(err.response !== undefined 
+          && err.response.status !== undefined){
+          if(err.response.status === 401 ){
+            this.props.logOut();
+          }
+        } else {
+          console.log(err)
         }
       });
   };
@@ -234,8 +332,13 @@ class Order extends Component {
         this.updateData();
       })
       .catch(err => {
-        if(err.response.status === 401 || err.respponse.status === 400){
-          this.props.logOut();
+        if(err.response !== undefined 
+          && err.response.status !== undefined){
+          if(err.response.status === 401 ){
+            this.props.logOut();
+          }
+        } else {
+          console.log(err)
         }
       });
   };
@@ -247,11 +350,7 @@ class Order extends Component {
       title: this.state.orderName,
       requirements: this.state.orderRequirements,
       description: this.state.orderDescription,
-      product: {
-        main: this.state.orderMainCategory,
-        sub: this.state.orderSubCategory,
-        kind: this.state.orderKindCategory,
-      },
+      product:  this.state.orderMainCategory,
     };
 
     if (this.state.orderPhotos.length > 0) {
@@ -267,6 +366,7 @@ class Order extends Component {
       .then(res => {
         () => NotificationManager.success(res.data.result);
         if (res.status === 200) {
+          console.log(res)
           this.createNotification('success', res.data.result);
           axios
             .post(`${api_url}/orders/get/2/${this.state.order._id}`, {
@@ -280,11 +380,24 @@ class Order extends Component {
         }
       })
       .catch(err => {
-        if(err.response.status === 401 || err.respponse.status === 400){
-          this.props.logOut();
+        if(err.response !== undefined 
+          && err.response.status !== undefined){
+          if(err.response.status === 401 ){
+            this.props.logOut();
+          }
+        } else {
+          console.log(err)
         }
       });
   };
+
+  onChange = (currentNode, selectedNodes) => {
+      this.setState({
+        orderMainCategory: currentNode.value
+      })
+  }
+
+  
 
   render() {
     const {
@@ -293,9 +406,11 @@ class Order extends Component {
       orderRequirements,
       orderDescription,
       orderMainCategory,
-      orderSubCategory,
-      orderKindCategory,
+      categories,
+      tree
     } = this.state;
+
+    console.log(order)
 
     if (!order) {
       return (
@@ -330,39 +445,18 @@ class Order extends Component {
                 <br />
                 <br />
 
-                <label htmlFor="mainCategory">Main category:</label>
+                <label htmlFor="mainCategory">Category:</label>
                 <br />
-                <input
-                  value={orderMainCategory}
-                  onChange={this.handleInputs('orderMainCategory')}
-                  type="text"
-                  id="mainCategory"
-                  style={inputsCss}
+                <Container 
+                 data={tree} 
+                 onChange = {this.onChange}
+                 keepTreeOnSearch={true}
+                 radioSelect={true}
+                 showPartiallySelected={true}
                 />
-                <br />
-                <br />
 
-                <label htmlFor="subCategory">Sub category:</label>
-                <br />
-                <input
-                  value={orderSubCategory}
-                  onChange={this.handleInputs('orderSubCategory')}
-                  type="text"
-                  id="subCategory"
-                  style={inputsCss}
-                />
-                <br />
-                <br />
 
-                <label htmlFor="kindCategory">Kind category:</label>
-                <br />
-                <input
-                  value={orderKindCategory}
-                  onChange={this.handleInputs('orderKindCategory')}
-                  type="text"
-                  id="kindCategory"
-                  style={inputsCss}
-                />
+
                 <br />
                 <br />
 
@@ -529,14 +623,14 @@ class Order extends Component {
 
                 <div className="order-info-item">
                   <p>
-                    <b>Main category:</b>
+                    <b>Category:</b>
                   </p>
                   <div>
-                    <div>{ order.category !== null ?  order.category.main : ""}</div>
+                    <div>{ this.state.catPath }</div>
                   </div>
                 </div>
 
-                <div className="order-info-item">
+                {/* <div className="order-info-item">
                   <p>
                     <b>Sub category:</b>
                   </p>
@@ -552,7 +646,7 @@ class Order extends Component {
                   <div>
                     <div>{ order.category !== null ?  order.category.kind : ""}</div>
                   </div>
-                </div>
+                </div> */}
 
                 <hr />
 
