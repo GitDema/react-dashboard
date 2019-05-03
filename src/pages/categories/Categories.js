@@ -48,6 +48,11 @@ class Categories extends Component {
         });
     };
 
+    handleInputs = name => event => {
+      this.setState({ [name]: event.target.value });
+    };
+  
+
     getCategoryList = () => {
         axios.post(`${api_url}/category/list/all`, {
             clientId: localStorage.getItem('clientId'),
@@ -80,6 +85,26 @@ class Categories extends Component {
                 this.createNotification('success', res.data.result);
                 this.getCategoryList();
             }
+        })
+    }
+
+    addCategoryTree = () => {
+        let reqData = {
+            clientId: localStorage.getItem('clientId'),
+            access_token: localStorage.getItem('access_token'),
+            name: this.state.treeInput
+        }
+        console.log(reqData)
+        axios.delete(`${api_url}/category/insert/tree`, reqData)
+        .then(res => {
+            console.log(res);
+            if(res.status === 200){
+                this.createNotification('success', res.data.result);
+                this.getCategoryList();
+            }
+        })
+        .catch(err => {
+          console.log(err)
         })
     }
 
@@ -172,15 +197,20 @@ class Categories extends Component {
                     ))}
                   </tbody>
                 </Table>
-
-                <Link to={`/admin/category_add`}>
+                    <input
+                      name="treeCat"
+                      type="text"
+                      onChange={() => this.handleInputs("treeInput")}
+                    />
+                
                     <Button
                         color="success"
                         className="width-100 mb-xs mr-xs"
+                        onClick={this.addCategoryTree}
                     >
                         Add new
                     </Button>
-                </Link>
+                
               </div>
             </Widget>
           </Col>

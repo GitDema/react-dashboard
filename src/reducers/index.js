@@ -4,6 +4,7 @@ import runtime from './runtime';
 import navigation from './navigation';
 import posts from './posts';
 import order from './order';
+import category from './category';
 
 export default combineReducers({
   auth,
@@ -11,4 +12,5 @@ export default combineReducers({
   navigation,
   posts,
   order,
+  category
 });
