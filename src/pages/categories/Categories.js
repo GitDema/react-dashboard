@@ -26,20 +26,25 @@ class Categories extends Component {
     constructor(props){
         super(props);
         this.state = {
-            treeInput: "",
-            subCatInput: "",
-            kindCatInput: "",
             categories: [],
             treeList: [],
             treeChoose: "",
             subCatList: [],
             kindCatList: [],
+            treeName: "",
+            displayForm: false,
         }
     }
 
     componentDidMount() {
         this.getCategoryList();
     };
+
+    toggle = () => {
+      this.setState({
+        displayForm: !this.state.displayForm
+      })
+    }
 
     createNotification = (type, message) => {
         this.refs.tariffNotification.addNotification({
@@ -49,6 +54,7 @@ class Categories extends Component {
     };
 
     handleInputs = name => event => {
+      console.log(name, event.target.value)
       this.setState({ [name]: event.target.value });
     };
   
@@ -60,7 +66,7 @@ class Categories extends Component {
         })
         .then(res => {
             this.setState({
-            categories: res.data.result
+              categories: res.data.result,
             })
         })
         .catch(err => {
@@ -71,46 +77,66 @@ class Categories extends Component {
         })
     }
 
-    deleteCategoryTree = (id) => {
-        let reqData = {
-            clientId: localStorage.getItem('clientId'),
-            access_token: localStorage.getItem('access_token'),
-            id
-        }
-        console.log(reqData)
-        axios.delete(`${api_url}/category/delete`, reqData)
-        .then(res => {
-            console.log(res);
-            if(res.status === 200){
-                this.createNotification('success', res.data.result);
-                this.getCategoryList();
-            }
-        })
+    deleteCategory = (id) => {
+      let data = {
+        clientId: localStorage.getItem('clientId'),
+        access_token: localStorage.getItem('access_token'),
+        id
+      }
+      let headers = {
+        "Content-Type": "application/json"
+      }
+      fetch(`${api_url}/category/delete`, {
+          method: "DELETE",
+          headers: headers,
+          body:  JSON.stringify(data)
+      })
+      .then(response => { 
+        console.log(response)
+        
+        return response.json(); 
+      })
+      .then(data =>{ 
+          this.createNotification('success', data.result);
+          this.getCategoryList();
+          console.log(data)
+      });
+      
     }
 
     addCategoryTree = () => {
         let reqData = {
             clientId: localStorage.getItem('clientId'),
             access_token: localStorage.getItem('access_token'),
-            name: this.state.treeInput
+            name: this.state.treeName
         }
         console.log(reqData)
-        axios.delete(`${api_url}/category/insert/tree`, reqData)
+        axios.post(`${api_url}/category/insert/tree`, reqData)
         .then(res => {
             console.log(res);
             if(res.status === 200){
-                this.createNotification('success', res.data.result);
+                this.createNotification('success', 'Added successfully');
+                this.setState({
+                  treeName: '',
+                  displayForm: false,
+                })
                 this.getCategoryList();
             }
         })
         .catch(err => {
-          console.log(err)
+          console.log(err);
+          if(err.response && err.response !== undefined){
+            if(err.response.status === 400){
+              this.createNotification('error', err.response.data.error_message); 
+            }  
+          }
         })
     }
 
 
   render() {
-      const { categories } = this.state;
+      const { categories, displayForm } = this.state;
+      console.log(this.state.treeName)
     return (
       <div>
         <Breadcrumb>
@@ -176,17 +202,16 @@ class Categories extends Component {
                               className="width-100 mb-xs mr-xs"
                               onClick={() => this.props.setCategory(category)}
                             >
-                              Edit
+                              Edit subcategory
                             </Button>
                           </Link>
-                        </td>
-                        
+                        </td>                   
 
                         <td>
                             <Button
                               color="danger"
                               className="width-100 mb-xs mr-xs"
-                              onClick={() => this.deleteCategoryTree(category._id)}
+                              onClick={() => this.deleteCategory(category._id)}
                             >
                               Delete
                             </Button>
@@ -197,19 +222,38 @@ class Categories extends Component {
                     ))}
                   </tbody>
                 </Table>
-                    <input
-                      name="treeCat"
-                      type="text"
-                      onChange={() => this.handleInputs("treeInput")}
-                    />
-                
+                { displayForm 
+                  ?(
+                    <div>
+                      <label htmlFor="new_cat_name">Category name:</label>
+                        <br />
+                        <input
+                          type="text"
+                          id="new_cat_name"
+                          onChange={this.handleInputs("treeName")}
+                        />
+                        <br />
+                        <br />
+                        <Button
+                            color="success"
+                            className="width-100 mb-xs mr-xs"
+                            onClick={this.addCategoryTree}
+                        >
+                            Add new
+                        </Button>
+                    </div>
+                  ) : (
                     <Button
-                        color="success"
-                        className="width-100 mb-xs mr-xs"
-                        onClick={this.addCategoryTree}
+                      color="success"
+                      className="width-100 mb-xs mr-xs"
+                      onClick={this.toggle}
                     >
-                        Add new
+                      Add
                     </Button>
+                  )
+                }
+                
+                    
                 
               </div>
             </Widget>

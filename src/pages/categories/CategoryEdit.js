@@ -41,10 +41,16 @@ class CategorieEdit extends Component {
     this.updateData();
   };
   
+  createNotification = (type, message) => {
+    this.refs.tariffNotification.addNotification({
+      message: message,
+      level: type,
+    });
+  };
 
   updateData = () => {
     const category = JSON.parse(localStorage.getItem('category'));
-    console.log(category)
+    //console.log(category)
     this.setState({
       category: category,
       categoryName: category.name || "",
@@ -60,55 +66,77 @@ class CategorieEdit extends Component {
     this.updateData()
   }
 
- /*  addKindCategory = () =>{
-    axios.defaults.headers.post['Content-Type'] ='application/json;charset=utf-8';
-    axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
-    axios.post(`${api_url}/category/insert/subcategory`,{
+  addKindCategory = () =>{
+    let reqData = {
       clientId: localStorage.getItem('clientId'),
       access_token: localStorage.getItem('access_token'),
       name: this.state.newcatName,
-      parent: this.state.categoryParent
-    })
+      parent: this.state.category._id
+    }
+    console.log(reqData)
+    axios.post(`${api_url}/category/insert/subcategory`, reqData)
     .then(res => {
-      console.log(res);
-      if(res.status === 200){
-        this.setState({
-          displayForm: !this.state.displayForm
-        })
-      }
+        console.log(res);
+        this.createNotification('success', 'Added successfully');
+        this.getCategoryList();
     })
     .catch(err => {
-      console.log(err)
+      if(err.response && err.response !== undefined){
+        if(err.response.status === 400){
+          this.createNotification('error', err.response.data.error_message); 
+        }  
+      }
     })
-  } */
+  }
 
-  addSubCategory = () =>{
-    let headers = { 
-      /* 'Access-Control-Allow-Headers': 'true',
-      'Access-control-allow-origin': 'http://localhost:3002',
-      'Access-Control-Allow-Methods': "POST" ,
-      'Access-Control-Allow-Credentials': ' true', */
+
+  
+  addSubCategory = () => {
+    let reqData = {
+      clientId: localStorage.getItem('clientId'),
+      access_token: localStorage.getItem('access_token'),
+      name: this.state.newcatName,
+      parent: this.state.category._id
+    }
+    console.log(reqData)
+    axios.post(`${api_url}/category/insert/category`, reqData)
+    .then(res => {
+        console.log(res);
+        this.createNotification('success', 'Added successfully');
+        this.getCategoryList();
+    })
+    .catch(err => {
+      if(err.response && err.response !== undefined){
+        if(err.response.status === 400){
+          this.createNotification('error', err.response.data.error_message); 
+        }  
+      }
+    })
+  }
+
+  deleteCategory = (id) => {
+    let data = {
+      clientId: localStorage.getItem('clientId'),
+      access_token: localStorage.getItem('access_token'),
+      id
+    }
+    let headers = {
       "Content-Type": "application/json"
     }
-    let data = {
-      'clientId': localStorage.getItem('clientId'),
-      'access_token': localStorage.getItem('access_token'),
-      'name': this.state.newcatName,
-      'parent': this.state.category._id
-    }
-    console.log(localStorage.getItem('clientId'))
-    fetch(`${api_url}/category/insert/category`, {
-      headers: headers,
-      method: "POST",
-      body:  JSON.stringify(data)
+    fetch(`${api_url}/category/delete`, {
+        method: "DELETE",
+        headers: headers,
+        body:  JSON.stringify(data)
     })
-    .then(function(response){ 
-        return response.json(); 
+    .then(response => { 
+      console.log(response)
+      
+      return response.json(); 
     })
-    .then(function(data){ 
+    .then(data =>{ 
+        this.createNotification('success', data.result);
         console.log(data)
     });
-
     
   }
 
@@ -131,9 +159,13 @@ class CategorieEdit extends Component {
       displayForm,
      } = this.state;
 
+     
+
     if(categoryChildren.length !== 0){
       return (
+        
         <div>
+          {console.log(this.state.category)}
           <Breadcrumb>
             <BreadcrumbItem active>Edit category tree: </BreadcrumbItem>
           </Breadcrumb>
@@ -149,6 +181,7 @@ class CategorieEdit extends Component {
                         <tr>
                           <th>Name</th>
                           <th>ID</th>
+                          <th>Subcategories count</th>
                           <th>Parent name</th>
                           <th>Parent ID</th>
                           <th />
@@ -172,6 +205,15 @@ class CategorieEdit extends Component {
                               <small>
                                 <span className="fw-semi-bold">Category name:</span>
                                 <p className="text-muted">{child.name}</p>
+                              </small>
+                            </div>
+                          </td>
+
+                          <td>
+                            <div className="mb-0">
+                              <small>
+                                <span className="fw-semi-bold">Category type:</span>
+                                <p className="text-muted">{child.children.length}</p>
                               </small>
                             </div>
                           </td>
@@ -208,13 +250,13 @@ class CategorieEdit extends Component {
                           </td>
 
                           <td>
-                              <Button
-                                color="danger"
-                                className="width-100 mb-xs mr-xs"
-                                onClick={() => this.deleteCategoryTree(child._id)}
-                              >
-                                Delete
-                              </Button>
+                            <Button
+                              color="danger"
+                              className="width-100 mb-xs mr-xs"
+                              onClick={() => this.deleteCategory(child._id)}
+                            >
+                              Delete
+                            </Button>
                           </td>
                         </tr>
                       ))}
@@ -257,11 +299,13 @@ class CategorieEdit extends Component {
               </Widget>
             </Col>
           </Row>
+          <NotificationSystem ref="tariffNotification" />
         </div>
       )
     } else {
       return(
         <div>
+           <NotificationSystem ref="tariffNotification" />
           <p>This item has no subcatgories</p>
           {displayForm 
             ? (
