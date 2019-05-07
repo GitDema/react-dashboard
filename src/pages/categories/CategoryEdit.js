@@ -14,6 +14,7 @@ import {
 import { Link } from 'react-router-dom';
 import Widget from '../../components/Widget';
 import { connect } from 'react-redux';
+import EditCategoryName from './components/EditCategoryName';
 /* Actions */
 import { setCategory } from '../../actions/category';
 import { logOut } from '../../actions/user';
@@ -34,6 +35,7 @@ class CategorieEdit extends Component {
       displayForm: false,
       showModal: false,
       newcatName: "",
+      catType: false
     }
   }
 
@@ -58,7 +60,9 @@ class CategorieEdit extends Component {
       categoryChildren: category.children || "",
       categoryParent: category.parent || "",
       showModal: false,
-    });
+    }, () => this.getParentType(category));
+
+
   };
 
   onEditClick = (child) => {
@@ -79,6 +83,36 @@ class CategorieEdit extends Component {
         console.log(res);
         this.createNotification('success', 'Added successfully');
         this.getCategoryList();
+        this.props.setCategory(this.state.category._id)
+        this.setState({
+          displayForm: false
+        })
+    })
+    .catch(err => {
+      if(err.response && err.response !== undefined){
+        if(err.response.status === 400){
+          this.createNotification('error', err.response.data.error_message); 
+        }  
+      }
+    })
+  }
+  
+  addSubCategory = () => {
+    let reqData = {
+      clientId: localStorage.getItem('clientId'),
+      access_token: localStorage.getItem('access_token'),
+      name: this.state.newcatName,
+      parent: this.state.category._id
+    }
+    axios.post(`${api_url}/category/insert/category`, reqData)
+    .then(res => {
+        console.log(res);
+        if(res.status === 200){
+          this.createNotification('success', 'Added successfully');
+          
+          this.handleSetCategory(this.state.category._id)
+          
+        }
     })
     .catch(err => {
       if(err.response && err.response !== undefined){
@@ -89,28 +123,24 @@ class CategorieEdit extends Component {
     })
   }
 
+  getParentType = (category) => {
 
-  
-  addSubCategory = () => {
-    let reqData = {
+    console.log('w')
+    axios.post(`${api_url}/category/path`, {
       clientId: localStorage.getItem('clientId'),
       access_token: localStorage.getItem('access_token'),
-      name: this.state.newcatName,
-      parent: this.state.category._id
-    }
-    console.log(reqData)
-    axios.post(`${api_url}/category/insert/category`, reqData)
+      id: category._id
+    })
     .then(res => {
-        console.log(res);
-        this.createNotification('success', 'Added successfully');
-        this.getCategoryList();
+      console.log(res)
+      if(res.data.result.stringified.split('///').length === 1){
+        this.setState({
+          catType: true
+        })
+      }
     })
     .catch(err => {
-      if(err.response && err.response !== undefined){
-        if(err.response.status === 400){
-          this.createNotification('error', err.response.data.error_message); 
-        }  
-      }
+      console.log(err)
     })
   }
 
@@ -130,13 +160,23 @@ class CategorieEdit extends Component {
     })
     .then(response => { 
       console.log(response)
-      
+      this.handleSetCategory(this.state.category._id)
       return response.json(); 
     })
     .then(data =>{ 
         this.createNotification('success', data.result);
         console.log(data)
     });
+    
+  }
+
+
+  handleSetCategory = (id) => {
+    console.log('handle')
+    this.props.setCategory(id);
+    this.setState({
+      displayForm: false
+    })  
     
   }
 
@@ -157,15 +197,14 @@ class CategorieEdit extends Component {
       categoryName, 
       categoryChildren, 
       displayForm,
+      catType
      } = this.state;
-
-     
 
     if(categoryChildren.length !== 0){
       return (
-        
         <div>
-          {console.log(this.state.category)}
+          {console.log(catType)}
+          {console.log(this.state.category.type)}
           <Breadcrumb>
             <BreadcrumbItem active>Edit category tree: </BreadcrumbItem>
           </Breadcrumb>
@@ -212,7 +251,7 @@ class CategorieEdit extends Component {
                           <td>
                             <div className="mb-0">
                               <small>
-                                <span className="fw-semi-bold">Category type:</span>
+                                <span className="fw-semi-bold">Category childs:</span>
                                 <p className="text-muted">{child.children.length}</p>
                               </small>
                             </div>
@@ -248,6 +287,12 @@ class CategorieEdit extends Component {
                               </Button>
                             </Link>
                           </td>
+
+                          <td>
+                            <EditCategoryName 
+                              id={child._id}
+                            />
+                          </td>    
 
                           <td>
                             <Button
@@ -307,7 +352,7 @@ class CategorieEdit extends Component {
         <div>
            <NotificationSystem ref="tariffNotification" />
           <p>This item has no subcatgories</p>
-          {displayForm 
+          {displayForm && category
             ? (
               <div>
                 <label htmlFor="new_cat_name">Category name:</label>
@@ -319,13 +364,23 @@ class CategorieEdit extends Component {
                   />
                   <br />
                   <br />
-                  <Button
-                    color="success"
-                    className="width-100 mb-xs mr-xs"
-                    onClick={this.addKindCategory}
-                  >
-                    Add new Subcategory
-                  </Button>
+                  {catType 
+                    ? <Button
+                        color="success"
+                        className="width-100 mb-xs mr-xs"
+                        onClick={this.addSubCategory}
+                      >
+                        Add new category
+                      </Button>
+                    :
+                      <Button
+                          color="success"
+                          className="width-100 mb-xs mr-xs"
+                          onClick={this.addKindCategory}
+                        >
+                          Add new Subcategory
+                        </Button> 
+                  }
               </div>
             )
             : (

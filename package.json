@@ -48,7 +48,7 @@
     "react": "16.7.0",
     "react-cookie": "^1.0.5",
     "react-dom": "16.7.0",
-    "react-dropdown-tree-select": "^1.19.0",
+    "react-dropdown-tree-select": "^1.20.1",
     "react-google-maps": "^9.4.5",
     "react-notification-system": "^0.2.17",
     "react-redux": "^5.0.4",

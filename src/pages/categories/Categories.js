@@ -12,6 +12,7 @@ import {
 import { Link } from 'react-router-dom';
 import Widget from '../../components/Widget';
 import { connect } from 'react-redux';
+import EditCategoryName from './components/EditCategoryName';
 /* Actions */
 import { setCategory } from '../../actions/category';
 import { logOut } from '../../actions/user';
@@ -71,9 +72,12 @@ class Categories extends Component {
         })
         .catch(err => {
           console.log(err)
-          if(err.response.status === 401){
-            this.props.logOut()
+          if(err.response){
+            if(err.response.status === 401){
+              this.props.logOut()
+            } 
           }
+          
         })
     }
 
@@ -202,9 +206,15 @@ class Categories extends Component {
                               className="width-100 mb-xs mr-xs"
                               onClick={() => this.props.setCategory(category)}
                             >
-                              Edit subcategory
+                              Edit subcategorys
                             </Button>
                           </Link>
+                        </td>  
+
+                        <td>
+                          <EditCategoryName 
+                            id={category._id}
+                          />
                         </td>                   
 
                         <td>
