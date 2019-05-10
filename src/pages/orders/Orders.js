@@ -142,8 +142,6 @@ class Orders extends Component {
                             <small>
                               <span className="fw-semi-bold">Name:</span>
                               <p className="text-muted">
-                              {console.log(order.company_name)}
-                              {console.log(order)}
                                 {order.company.profile.name !== null ? order.company.profile.name  : ""}
                               </p>
                             </small>
