@@ -142,7 +142,8 @@ class Orders extends Component {
                             <small>
                               <span className="fw-semi-bold">Name:</span>
                               <p className="text-muted">
-                                {order.user.company_name}
+                              {console.log(order.user)}
+                                {order.company_name  ? order.company_name : ""}
                               </p>
                             </small>
                           </div>
