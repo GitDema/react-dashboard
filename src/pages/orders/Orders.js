@@ -38,6 +38,7 @@ class Orders extends Component {
         offset: 0,
       })
       .then(res => {
+        console.log(res)
         this.setState({ orders: res.data.result });
       })
       .catch(err => {
@@ -142,7 +143,7 @@ class Orders extends Component {
                             <small>
                               <span className="fw-semi-bold">Name:</span>
                               <p className="text-muted">
-                                {order.company.profile.name !== null ? order.company.profile.name  : ""}
+                                {order.company !== null ? order.company.profile.name  : ""}
                               </p>
                             </small>
                           </div>
