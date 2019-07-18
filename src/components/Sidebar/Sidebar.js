@@ -37,7 +37,7 @@ const Sidebar = () => (
       />
 
       {/* <LinksGroup header="Order" headerLink="/admin/order" glyph="typography" /> */}
-      <hr />
+      {/* <hr />
       <LinksGroup header="Dashboard" headerLink="/admin" glyph="dashboard" />
       <LinksGroup
         header="Typography"
@@ -48,13 +48,13 @@ const Sidebar = () => (
         header="Tables Basic"
         headerLink="/admin/tables"
         glyph="tables"
-      />
+      /> */}
       {/* <LinksGroup
         header="Notifications"
         headerLink="/admin/notifications"
         glyph="notifications"
       /> */}
-      <LinksGroup
+      {/* <LinksGroup
         header="Components"
         headerLink="/admin/components"
         childrenLinks={[
@@ -76,7 +76,7 @@ const Sidebar = () => (
           },
         ]}
         glyph="components"
-      />
+      /> */}
     </ul>
   </nav>
 );

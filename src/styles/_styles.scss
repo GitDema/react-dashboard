@@ -1,0 +1,10 @@
+.table-icon{
+    width: 10px;
+    margin-left: 5px;
+    margin-top: -3px;
+    transition: 2ms;
+    &:hover{
+        cursor: pointer;
+        color: #96c9fd;
+    }
+}

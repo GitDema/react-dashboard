@@ -9,12 +9,18 @@ import {
   DropdownItem,
   Breadcrumb,
   BreadcrumbItem,
+  Pagination,
+  PaginationItem,
+  PaginationLink,
 } from 'reactstrap';
 import { logOut } from '../../actions/user';
 import { connect } from 'react-redux';
 import Widget from '../../components/Widget';
 import NotificationSystem from 'react-notification-system';
 import axios from 'axios';
+import icon from '../../components/Icon/icons/index';
+
+
 
 const api_url = process.env.API_URL;
 
@@ -23,7 +29,9 @@ class Tariffs extends Component {
     super(props);
     this.state = {
       companies: [],
-      dropdownOpen: false
+      dropdownOpen: false,
+      companiesPerPage: 20,
+      offsetPagination: 0,
     };
     this.toggle = this.toggle.bind(this);
   }
@@ -35,14 +43,6 @@ class Tariffs extends Component {
     /* Bind tariff notification */
     this._tariffNotification = this.refs.tariffNotification;
   };
-
- /*  _addNotification = event => {
-    event.preventDefault();
-    this._tariffNotification.addNotification({
-      message: 'Notification message',
-      level: 'success',
-    });
-  }; */
 
   createNotification = (type, message) => {
     this._tariffNotification.addNotification({
@@ -62,20 +62,29 @@ class Tariffs extends Component {
       .post(`${api_url}/company/list`, {
         clientId: localStorage.getItem('clientId'),
         access_token: localStorage.getItem('access_token'),
-        count: 250,
-        offset: 0,
+        count: this.state.companiesPerPage,
+        offset: this.state.offsetPagination,
       })
       .then(res => {
         if (res.status === 200) {
-          this.setState({
-            companies: res.data.result,
-          });
+          if (res.data.result.length === 0) {
+            this.setState(
+              {
+                offsetPagination:
+                  this.state.offsetPagination - this.state.companiesPerPage,
+              },
+              this.getCompaniesList,
+            );
+          } else {
+            this.setState({
+              companies: res.data.result,
+            });
+          }
         }
       })
       .catch(err => {
-        if(err.response !== undefined 
-          && err.response.status !== undefined){
-          if(err.response.status === 401 || err.respponse.status === 400){
+        if (err.response !== undefined && err.response.status !== undefined) {
+          if (err.response.status === 401 || err.respponse.status === 400) {
             this.props.logOut();
           }
         }
@@ -102,10 +111,37 @@ class Tariffs extends Component {
       });
   };
 
+  setItemCountPerPage = count => {
+    this.setState({
+      companiesPerPage: count,
+    }, this.getCompaniesList);
+  };
+
+  selectNextPage = () => {
+    this.setState(
+      {
+        offsetPagination:
+          this.state.offsetPagination + this.state.companiesPerPage,
+      },
+      this.getCompaniesList,
+    );
+  };
+
+  selectPrevPage = () => {
+    this.setState(
+      {
+        offsetPagination:
+          this.state.offsetPagination - this.state.companiesPerPage,
+      },
+      this.getCompaniesList,
+    );
+  };
+
   render() {
     const { companies } = this.state;
+    console.log(companies.sort())
     return (
-      <div>
+      <div className="tariff">
         <Breadcrumb>
           <BreadcrumbItem active>Tariffs</BreadcrumbItem>
         </Breadcrumb>
@@ -115,13 +151,35 @@ class Tariffs extends Component {
         <Row>
           <Col sm={12}>
             <Widget settings close>
+              <div>
+                <UncontrolledDropdown>
+                  <DropdownToggle
+                    caret
+                    color="secondary"
+                    style={{ marginBottom: '20px' }}
+                  >
+                    Items per page
+                  </DropdownToggle>
+                  <DropdownMenu>
+                    <DropdownItem onClick={() => this.setItemCountPerPage(20)}>
+                      20
+                    </DropdownItem>
+                    <DropdownItem onClick={() => this.setItemCountPerPage(50)}>
+                      50
+                    </DropdownItem>
+                    <DropdownItem onClick={() => this.setItemCountPerPage(100)}>
+                      100
+                    </DropdownItem>
+                  </DropdownMenu>
+                </UncontrolledDropdown>
+              </div>
               <div className="table-responsive">
                 <Table borderless className="table-hover mainTable">
                   <thead>
                     <tr>
-                      <th>Company</th>
-                      <th>Email</th>
-                      <th>Tariff plan</th>
+                      <th>Company <img src={icon.arrow} className="table-icon" /></th>
+                      <th>Email <img src={icon.arrow} className="table-icon" /></th>
+                      <th>Tariff plan <img src={icon.arrow} className="table-icon" /></th>
                       <th />
                     </tr>
                   </thead>
@@ -197,6 +255,16 @@ class Tariffs extends Component {
                 </Table>
               </div>
             </Widget>
+
+            <Pagination aria-label="Page navigation example">
+              <PaginationItem>
+                <PaginationLink style={{marginRight: "10px"}} previous onClick={this.selectPrevPage}>{`<< Previous page`}</PaginationLink>
+              </PaginationItem>
+              
+              <PaginationItem>
+                <PaginationLink next onClick={this.selectNextPage}>{`Next page >>`}</PaginationLink>
+              </PaginationItem>
+            </Pagination>
           </Col>
         </Row>
 
@@ -207,11 +275,14 @@ class Tariffs extends Component {
 }
 
 const mapDispatchToProps = dispatch => {
-  return{
+  return {
     logOut: () => {
-      dispatch(logOut())
-    }
-  }
-}
+      dispatch(logOut());
+    },
+  };
+};
 
-export default connect(null, mapDispatchToProps)(Tariffs);
+export default connect(
+  null,
+  mapDispatchToProps,
+)(Tariffs);

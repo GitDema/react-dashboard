@@ -12,8 +12,9 @@ import stack from './stack.svg';
 import user from './user.svg';
 import database from './database.svg';
 import list from './list.svg';
+import arrow from './arrow.svg';
 
-export default { 
+export default {
   components,
   dashboard,
   notifications,
@@ -27,5 +28,6 @@ export default {
   stack,
   user,
   database,
-  list
-}
+  list,
+  arrow,
+};
