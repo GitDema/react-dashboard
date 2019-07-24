@@ -13,14 +13,15 @@ import {
   PaginationItem,
   PaginationLink,
 } from 'reactstrap';
-import { logOut } from '../../actions/user';
-import { connect } from 'react-redux';
-import Widget from '../../components/Widget';
 import NotificationSystem from 'react-notification-system';
+import { connect } from 'react-redux';
 import axios from 'axios';
+import moment from 'moment';
+
+
+import { logOut } from '../../actions/user';
+import Widget from '../../components/Widget';
 import icon from '../../components/Icon/icons/index';
-
-
 
 const api_url = process.env.API_URL;
 
@@ -112,9 +113,12 @@ class Tariffs extends Component {
   };
 
   setItemCountPerPage = count => {
-    this.setState({
-      companiesPerPage: count,
-    }, this.getCompaniesList);
+    this.setState(
+      {
+        companiesPerPage: count,
+      },
+      this.getCompaniesList,
+    );
   };
 
   selectNextPage = () => {
@@ -139,7 +143,7 @@ class Tariffs extends Component {
 
   render() {
     const { companies } = this.state;
-    console.log(companies.sort())
+    console.log(companies.sort());
     return (
       <div className="tariff">
         <Breadcrumb>
@@ -177,9 +181,20 @@ class Tariffs extends Component {
                 <Table borderless className="table-hover mainTable">
                   <thead>
                     <tr>
-                      <th>Company <img src={icon.arrow} className="table-icon" /></th>
-                      <th>Email <img src={icon.arrow} className="table-icon" /></th>
-                      <th>Tariff plan <img src={icon.arrow} className="table-icon" /></th>
+                      <th>
+                        Company <img src={icon.arrow} className="table-icon" />
+                      </th>
+                      <th>
+                        Email <img src={icon.arrow} className="table-icon" />
+                      </th>
+                      <th>
+                        Date of registration{' '}
+                        <img src={icon.arrow} className="table-icon" />
+                      </th>
+                      <th>
+                        Tariff plan{' '}
+                        <img src={icon.arrow} className="table-icon" />
+                      </th>
                       <th />
                     </tr>
                   </thead>
@@ -203,6 +218,17 @@ class Tariffs extends Component {
                               <span className="fw-semi-bold">Email:</span>
                               <p className="text-muted">
                                 {company.profile.contacts.email}
+                              </p>
+                            </small>
+                          </div>
+                        </td>
+
+                        <td>
+                          <div className="mb-0">
+                            <small>
+                              <span className="fw-semi-bold">Date of registration:</span>
+                              <p className="text-muted">
+                                {moment(company.created_at).format("DD.MM.YYYY")}
                               </p>
                             </small>
                           </div>
@@ -258,11 +284,18 @@ class Tariffs extends Component {
 
             <Pagination aria-label="Page navigation example">
               <PaginationItem>
-                <PaginationLink style={{marginRight: "10px"}} previous onClick={this.selectPrevPage}>{`<< Previous page`}</PaginationLink>
+                <PaginationLink
+                  style={{ marginRight: '10px' }}
+                  previous
+                  onClick={this.selectPrevPage}
+                >{`<< Previous page`}</PaginationLink>
               </PaginationItem>
-              
+
               <PaginationItem>
-                <PaginationLink next onClick={this.selectNextPage}>{`Next page >>`}</PaginationLink>
+                <PaginationLink
+                  next
+                  onClick={this.selectNextPage}
+                >{`Next page >>`}</PaginationLink>
               </PaginationItem>
             </Pagination>
           </Col>
