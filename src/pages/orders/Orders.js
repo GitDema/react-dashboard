@@ -109,7 +109,7 @@ class Orders extends Component {
                           <div className="mb-0">
                             <small>
                               <span className="fw-semi-bold">ID:</span>
-                              <p className="text-muted">{order.index}</p>
+                              <p className="text-muted">{order._id}</p>
                             </small>
                           </div>
                           <div className="mb-0">
