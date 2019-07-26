@@ -534,7 +534,8 @@ class Order extends Component {
                   </div>
 
                   <div>
-                    {order.status.toLowerCase() === 'placed' ? (
+                    {console.log(order)}
+                    {order.status.toLowerCase() === 'placed' || order.status.toLowerCase() === 'draft' ? (
                       <Fragment>
                         <Link to="/admin/orders">
                           <Button
