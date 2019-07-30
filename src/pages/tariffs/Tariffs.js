@@ -18,7 +18,6 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import moment from 'moment';
 
-
 import { logOut } from '../../actions/user';
 import Widget from '../../components/Widget';
 import icon from '../../components/Icon/icons/index';
@@ -182,18 +181,28 @@ class Tariffs extends Component {
                   <thead>
                     <tr>
                       <th>
-                        Company <img src={icon.arrow} className="table-icon" />
+                        Company{' '}
+                        {/* <img src={icon.arrow} className="table-icon" /> */}
                       </th>
                       <th>
-                        Email <img src={icon.arrow} className="table-icon" />
+                        Email{' '}
+                        {/* <img src={icon.arrow} className="table-icon" /> */}
                       </th>
                       <th>
                         Date of registration{' '}
-                        <img src={icon.arrow} className="table-icon" />
+                        {/* <img src={icon.arrow} className="table-icon" /> */}
+                      </th>
+                      <th>
+                        Products{' '}
+                        {/* <img src={icon.arrow} className="table-icon" /> */}
+                      </th>
+                      <th>
+                        Requests{' '}
+                        {/* <img src={icon.arrow} className="table-icon" /> */}
                       </th>
                       <th>
                         Tariff plan{' '}
-                        <img src={icon.arrow} className="table-icon" />
+                        {/* <img src={icon.arrow} className="table-icon" /> */}
                       </th>
                       <th />
                     </tr>
@@ -204,7 +213,7 @@ class Tariffs extends Component {
                         <td>
                           <div className="mb-0">
                             <small>
-                              <span className="fw-semi-bold">Name:</span>
+                              <span className="fw-semi-bold">Company:</span>
                               <p className="text-muted">
                                 {company.profile.name}
                               </p>
@@ -226,9 +235,13 @@ class Tariffs extends Component {
                         <td>
                           <div className="mb-0">
                             <small>
-                              <span className="fw-semi-bold">Date of registration:</span>
+                              <span className="fw-semi-bold">
+                                Date of registration:
+                              </span>
                               <p className="text-muted">
-                                {moment(company.created_at).format("DD.MM.YYYY")}
+                                {moment(company.created_at).format(
+                                  'DD.MM.YYYY',
+                                )}
                               </p>
                             </small>
                           </div>
@@ -237,7 +250,29 @@ class Tariffs extends Component {
                         <td>
                           <div className="mb-0">
                             <small>
-                              <span className="fw-semi-bold">Plan:</span>
+                              <span className="fw-semi-bold">Products:</span>
+                              <p className="text-muted">
+                                {company.financialInfo.products.length}
+                              </p>
+                            </small>
+                          </div>
+                        </td>
+
+                        <td>
+                          <div className="mb-0">
+                            <small>
+                              <span className="fw-semi-bold">Requests:</span>
+                              <p className="text-muted">
+                                {company.financialInfo.orders.length}
+                              </p>
+                            </small>
+                          </div>
+                        </td>
+
+                        <td>
+                          <div className="mb-0">
+                            <small>
+                              <span className="fw-semi-bold">Tariff plan:</span>
                               <p className="text-muted">{company.tariff}</p>
                             </small>
                           </div>
