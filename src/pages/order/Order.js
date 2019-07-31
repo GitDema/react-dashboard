@@ -1,8 +1,11 @@
 /* eslint-disable jsx-a11y/label-has-for */
 import React, { Component, Fragment } from 'react';
-import { logOut } from '../../actions/user';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { Redirect } from 'react-router';
+import NotificationSystem from 'react-notification-system';
+import axios from 'axios';
+import moment from 'moment';
 import {
   Row,
   Col,
@@ -11,14 +14,13 @@ import {
   Badge,
   Button,
 } from 'reactstrap';
-import axios from 'axios';
-import moment from 'moment';
 
 /* Catrgory tree */
 import Container from './DropdownContainer';
 
 import Widget from '../../components/Widget';
-import NotificationSystem from 'react-notification-system';
+import { logOut } from '../../actions/user';
+
 /* Api url */
 const api_url = process.env.API_URL;
 
@@ -32,6 +34,7 @@ class Order extends Component {
 
     this.state = {
       order: null,
+      redirectToProducts: false,
       orderName: '',
       orderRequirements: '',
       orderDescription: '',
@@ -48,15 +51,14 @@ class Order extends Component {
     this.handleRemovePhoto = this.handleRemovePhoto.bind(this);
     this.handleRemoveDoc = this.handleRemoveDoc.bind(this);
     this.onChange = this.onChange.bind(this);
-
   }
 
   componentDidMount() {
     this.updateData();
     setTimeout(this.getCategoryList, 500);
     setTimeout(this.setCatToData, 1000);
-  };
-  
+  }
+
   createNotification = (type, message) => {
     this.refs.tariffNotification.addNotification({
       message: message,
@@ -79,14 +81,14 @@ class Order extends Component {
 
     this.setState({
       order: order,
-      orderName: order.name || "",
-      orderRequirements: order.requirements || "",
-      orderDescription: order.description || "",
-      orderMainCategory:  order.category !== null ?  order.category.main : "",
-      orderSubCategory: order.category !== null ? order.category.sub : "",
-      orderKindCategory: order.category !== null ? order.category.kind : "",
-      orderPhotos: imagesId || "",
-      docUrl: docsId || "",
+      orderName: order.name || '',
+      orderRequirements: order.requirements || '',
+      orderDescription: order.description || '',
+      orderMainCategory: order.category !== null ? order.category.main : '',
+      orderSubCategory: order.category !== null ? order.category.sub : '',
+      orderKindCategory: order.category !== null ? order.category.kind : '',
+      orderPhotos: imagesId || '',
+      docUrl: docsId || '',
     });
   };
 
@@ -116,14 +118,13 @@ class Order extends Component {
             });
         }
       })
-      .catch(err =>{
-        if(err.response !== undefined 
-          && err.response.status !== undefined){
-          if(err.response.status === 401 ){
+      .catch(err => {
+        if (err.response !== undefined && err.response.status !== undefined) {
+          if (err.response.status === 401) {
             this.props.logOut();
           }
         } else {
-          console.log(err)
+          console.log(err);
         }
       });
   };
@@ -153,88 +154,99 @@ class Order extends Component {
         }
       })
       .catch(err => {
-        if(err.response !== undefined 
-          && err.response.status !== undefined){
-          if(err.response.status === 401 ){
+        if (err.response !== undefined && err.response.status !== undefined) {
+          if (err.response.status === 401) {
             this.props.logOut();
           }
         } else {
-          console.log(err)
+          console.log(err);
         }
       });
   };
 
-/* Categories functions */
+  /* Categories functions */
 
-  getCategoryList = () =>{
-    axios.post(`${api_url}/category/list/all`, {
-      clientId: localStorage.getItem('clientId'),
-      access_token: localStorage.getItem('access_token'),
-    })
-    .then(res => {
-        this.setState({
-            categories:  res.data.result
-        }, this.getCategoryPath(this.state.order.category._id))
-    })
-    .catch(err => {
-      console.log(err)
-    })
-  }
+  getCategoryList = () => {
+    axios
+      .post(`${api_url}/category/list/all`, {
+        clientId: localStorage.getItem('clientId'),
+        access_token: localStorage.getItem('access_token'),
+      })
+      .then(res => {
+        this.setState(
+          {
+            categories: res.data.result,
+          },
+          this.getCategoryPath(this.state.order.category._id),
+        );
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
 
   setCatToData = () => {
     let res = [];
     let children = [];
     let subCh = [];
-   this.state.categories.map(cat => {
-    children = [];
-     cat.children !== []
-      ? cat.children.map(ch => {
-        subCh = [];
-        ch.children !== []
-        ? ch.children.map(sub => { 
-          subCh = [...subCh, {
-            label: sub.name,
-            value: sub._id,
-           }]
-        })
-        : []
-        children = [...children, {
-          label: ch.name,
-          value: ch._id,
-          children: subCh,
-         }]
-        })
-      : []
-    res = [...res, {
-      label: cat.name,
-      value: cat._id,
-      children: children,
-     }]
-   })
-   this.setState({
-     tree: res
-   })
-   
-  }
+    this.state.categories.map(cat => {
+      children = [];
+      cat.children !== []
+        ? cat.children.map(ch => {
+            subCh = [];
+            ch.children !== []
+              ? ch.children.map(sub => {
+                  subCh = [
+                    ...subCh,
+                    {
+                      label: sub.name,
+                      value: sub._id,
+                    },
+                  ];
+                })
+              : [];
+            children = [
+              ...children,
+              {
+                label: ch.name,
+                value: ch._id,
+                children: subCh,
+              },
+            ];
+          })
+        : [];
+      res = [
+        ...res,
+        {
+          label: cat.name,
+          value: cat._id,
+          children: children,
+        },
+      ];
+    });
+    this.setState({
+      tree: res,
+    });
+  };
 
-  getCategoryPath = (id) => {
-    axios.post(`${api_url}/category/path`, {
-      clientId: localStorage.getItem('clientId'),
-      access_token: localStorage.getItem('access_token'),
-      id: id
-    })
-    .then(res => {
-      console.log(res)
-      this.setState({
-        catPath: res.data.result.stringified.split('///').join(' > ')
+  getCategoryPath = id => {
+    axios
+      .post(`${api_url}/category/path`, {
+        clientId: localStorage.getItem('clientId'),
+        access_token: localStorage.getItem('access_token'),
+        id: id,
       })
-    })
-    .catch(err => {
-      console.log(err)
-    })
-  }
+      .then(res => {
+        this.setState({
+          catPath: res.data.result.stringified.split('///').join(' > '),
+        });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
 
-/* Categories functions ends */
+  /* Categories functions ends */
 
   handleInputs = name => event => {
     this.setState({ [name]: event.target.value });
@@ -270,13 +282,12 @@ class Order extends Component {
         }
       })
       .catch(err => {
-        if(err.response !== undefined 
-          && err.response.status !== undefined){
-          if(err.response.status === 401 ){
+        if (err.response !== undefined && err.response.status !== undefined) {
+          if (err.response.status === 401) {
             this.props.logOut();
           }
         } else {
-          console.log(err)
+          console.log(err);
         }
       });
   };
@@ -303,13 +314,12 @@ class Order extends Component {
         }
       })
       .catch(err => {
-        if(err.response !== undefined 
-          && err.response.status !== undefined){
-          if(err.response.status === 401 ){
+        if (err.response !== undefined && err.response.status !== undefined) {
+          if (err.response.status === 401) {
             this.props.logOut();
           }
         } else {
-          console.log(err)
+          console.log(err);
         }
       });
   };
@@ -334,13 +344,12 @@ class Order extends Component {
         this.updateData();
       })
       .catch(err => {
-        if(err.response !== undefined 
-          && err.response.status !== undefined){
-          if(err.response.status === 401 ){
+        if (err.response !== undefined && err.response.status !== undefined) {
+          if (err.response.status === 401) {
             this.props.logOut();
           }
         } else {
-          console.log(err)
+          console.log(err);
         }
       });
   };
@@ -352,7 +361,7 @@ class Order extends Component {
       title: this.state.orderName,
       requirements: this.state.orderRequirements,
       description: this.state.orderDescription,
-      product:  this.state.orderMainCategory,
+      product: this.state.orderMainCategory,
     };
 
     if (this.state.orderPhotos.length > 0) {
@@ -368,7 +377,6 @@ class Order extends Component {
       .then(res => {
         () => NotificationManager.success(res.data.result);
         if (res.status === 200) {
-          console.log(res)
           this.createNotification('success', res.data.result);
           axios
             .post(`${api_url}/orders/get/2/${this.state.order._id}`, {
@@ -382,37 +390,58 @@ class Order extends Component {
         }
       })
       .catch(err => {
-        if(err.response !== undefined 
-          && err.response.status !== undefined){
-          if(err.response.status === 401 ){
+        if (err.response !== undefined && err.response.status !== undefined) {
+          if (err.response.status === 401) {
             this.props.logOut();
           }
         } else {
-          console.log(err)
+          console.log(err);
         }
       });
   };
 
-  onChange = (currentNode, selectedNodes) => {
-      this.setState({
-        orderMainCategory: currentNode.value
+  deleteProduct = productId => {
+    axios
+      .delete(`${api_url}/orders/${productId}`, {
+        data: {
+          clientId: localStorage.getItem('clientId'),
+          access_token: localStorage.getItem('access_token'),
+        },
       })
-  }
+      .then(res => {
+        this.createNotification('success', res.data.result);
+        setTimeout(() => {
+          if (res.status === 200) {
+            this.setState({ redirectToProducts: true });
+          }
+        }, 2000);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
 
-  
+  onChange = (currentNode, selectedNodes) => {
+    this.setState({
+      orderMainCategory: currentNode.value,
+    });
+  };
 
   render() {
     const {
+      redirectToProducts,
       order,
       orderName,
       orderRequirements,
       orderDescription,
       orderMainCategory,
       categories,
-      tree
+      tree,
     } = this.state;
 
-    console.log(order)
+    if (redirectToProducts) {
+      return <Redirect to={'/admin/orders'} />;
+    }
 
     if (!order) {
       return (
@@ -449,15 +478,13 @@ class Order extends Component {
 
                 <label htmlFor="mainCategory">Category:</label>
                 <br />
-                <Container 
-                 data={tree} 
-                 onChange = {this.onChange}
-                 keepTreeOnSearch={true}
-                 radioSelect={true}
-                 showPartiallySelected={true}
+                <Container
+                  data={tree}
+                  onChange={this.onChange}
+                  keepTreeOnSearch={true}
+                  radioSelect={true}
+                  showPartiallySelected={true}
                 />
-
-
 
                 <br />
                 <br />
@@ -516,7 +543,7 @@ class Order extends Component {
                   <div>
                     <Link to="/admin/orders">
                       <Button
-                        color="danger"
+                        color="primary"
                         className="btn-rounded width-100 mb-xs mr-xs"
                         onClick={() => alert('Order editing cancelled')}
                       >
@@ -534,8 +561,8 @@ class Order extends Component {
                   </div>
 
                   <div>
-                    {console.log(order)}
-                    {order.status.toLowerCase() === 'placed' || order.status.toLowerCase() === 'draft' ? (
+                    {order.status.toLowerCase() === 'placed' ||
+                    order.status.toLowerCase() === 'draft' ? (
                       <Fragment>
                         <Link to="/admin/orders">
                           <Button
@@ -580,6 +607,20 @@ class Order extends Component {
                     )}
                   </div>
                 </div>
+
+                <br />
+                <br />
+
+                <div>
+                  <p>Product: {order._id}</p>
+                  <Button
+                    color="danger"
+                    className="btn-rounded width-100 mb-xs mr-xs"
+                    onClick={() => this.deleteProduct(order._id)}
+                  >
+                    Delete product
+                  </Button>
+                </div>
               </div>
             </Widget>
           </Col>
@@ -609,7 +650,8 @@ class Order extends Component {
                     <b>Currency/Price:</b>
                   </p>
                   <div>
-                    {order.currency} / {order.price / 100}
+                    {order.currency ? order.currency : ' - '} /{' '}
+                    {order.price / 100}
                   </div>
                 </div>
 
@@ -629,7 +671,7 @@ class Order extends Component {
                     <b>Category:</b>
                   </p>
                   <div>
-                    <div>{ this.state.catPath }</div>
+                    <div>{this.state.catPath}</div>
                   </div>
                 </div>
 
@@ -772,11 +814,14 @@ class Order extends Component {
 }
 
 const mapDispatchToProps = dispatch => {
-  return{
+  return {
     logOut: () => {
-      dispatch(logOut())
-    }
-  }
-}
+      dispatch(logOut());
+    },
+  };
+};
 
-export default connect(null, mapDispatchToProps)(Order);
+export default connect(
+  null,
+  mapDispatchToProps,
+)(Order);

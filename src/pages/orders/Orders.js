@@ -38,17 +38,16 @@ class Orders extends Component {
         offset: 0,
       })
       .then(res => {
-        console.log(res)
+        console.log(res);
         this.setState({ orders: res.data.result });
       })
       .catch(err => {
-        if(err.response !== undefined 
-          && err.response.status !== undefined){
-          if(err.response.status === 401 ){
+        if (err.response !== undefined && err.response.status !== undefined) {
+          if (err.response.status === 401) {
             this.props.logOut();
           }
         } else {
-          console.log(err)
+          console.log(err);
         }
       });
   }
@@ -90,130 +89,135 @@ class Orders extends Component {
                     </tr>
                   </thead>
                   <tbody>
-                    {orders.map(order => (
-                      <tr key={order.index}>
-                        <td>
-                          {order.photos.length > 0 && (
-                            <img
-                              className="img-rounded"
-                              width="60"
-                              height="60"
-                              style={{ objectFit: 'cover' }}
-                              src={`${api_url}/file/${order.photos[0]._id}`}
-                              alt="Product photo"
-                            />
-                          )}
-                        </td>
+                    {orders.map(order =>
+                      order.is_deleted ? null : (
+                        <tr key={order.index}>
+                          <td>
+                            {order.photos.length > 0 && (
+                              <img
+                                className="img-rounded"
+                                width="60"
+                                height="60"
+                                style={{ objectFit: 'cover' }}
+                                src={`${api_url}/file/${order.photos[0]._id}`}
+                                alt="Product photo"
+                              />
+                            )}
+                          </td>
 
-                        <td>
-                          <div className="mb-0">
-                            <small>
-                              <span className="fw-semi-bold">ID:</span>
-                              <p className="text-muted">{order._id}</p>
-                            </small>
-                          </div>
-                          <div className="mb-0">
-                            <small>
-                              <span className="fw-semi-bold">Product:</span>
-                              <p className="text-muted">{order.name}</p>
-                            </small>
-                          </div>
-                          <div className="mb-0">
-                            <small>
-                              <span className="fw-semi-bold">
-                                Currency/Price:
-                              </span>
-                              <p className="text-muted">
-                                {order.currency} {order.price / 100}
-                              </p>
-                            </small>
-                          </div>
-                          <div className="mb-0">
-                            <small>
-                              <span className="fw-semi-bold">Propose:</span>
-                              <p className="text-muted">
-                                <Badge color="info">{order.purpose}</Badge>
-                              </p>
-                            </small>
-                          </div>
-                        </td>
-
-                        <td>
-                          <div className="mb-0">
-                            <small>
-                              <span className="fw-semi-bold">Name:</span>
-                              <p className="text-muted">
-                                {order.company !== null ? order.company.profile.name  : ""}
-                              </p>
-                            </small>
-                          </div>
-                          <div className="mb-0">
-                            <small>
-                              <span className="fw-semi-bold">Country:</span>
-                              <p className="text-muted">{order.country}</p>
-                            </small>
-                          </div>
-                        </td>
-
-                        <td>
-                          <div className="mb-0">
-                            <small>
-                              <span className="fw-semi-bold">Term:</span>
-                              <p className="text-muted">
-                                {order.delivery.term}
-                              </p>
-                            </small>
-                          </div>
-                          <div className="mb-0">
-                            <small>
-                              <span className="fw-semi-bold">Variants:</span>
-                              <p className="text-muted">
-                                {order.delivery.variant}
-                              </p>
-                            </small>
-                          </div>
-                        </td>
-
-                        <td className="text-semi-muted">
-                          {moment(order.auction.start).format('DD.MM.YYYY')}
-                          <br />
-                          {moment(order.auction.start).format('HH:mm')}
-                        </td>
-
-                        <td>{order.requirements}</td>
-
-                        <td>
-                          <div className="mb-0">
-                            <small>
-                              {order.documents.map(doc => (
-                                <p
-                                  key={doc.filename}
-                                  className="text-muted"
-                                  style={{ margin: 0 }}
-                                >
-                                  {doc.filename}
+                          <td>
+                            <div className="mb-0">
+                              <small>
+                                <span className="fw-semi-bold">ID:</span>
+                                <p className="text-muted">{order._id}</p>
+                              </small>
+                            </div>
+                            <div className="mb-0">
+                              <small>
+                                <span className="fw-semi-bold">Product:</span>
+                                <p className="text-muted">{order.name}</p>
+                              </small>
+                            </div>
+                            <div className="mb-0">
+                              <small>
+                                <span className="fw-semi-bold">
+                                  Currency/Price:
+                                </span>
+                                <p className="text-muted">
+                                  {order.currency ? order.currency : ' - '} /{' '}
+                                  {order.price / 100}
                                 </p>
-                              ))}
-                            </small>
-                          </div>
-                        </td>
+                              </small>
+                            </div>
+                            <div className="mb-0">
+                              <small>
+                                <span className="fw-semi-bold">Propose:</span>
+                                <p className="text-muted">
+                                  <Badge color="info">{order.purpose}</Badge>
+                                </p>
+                              </small>
+                            </div>
+                          </td>
 
-                        <td>{order.description}</td>
+                          <td>
+                            <div className="mb-0">
+                              <small>
+                                <span className="fw-semi-bold">Name:</span>
+                                <p className="text-muted">
+                                  {order.company !== null
+                                    ? order.company.profile.name
+                                    : ''}
+                                </p>
+                              </small>
+                            </div>
+                            <div className="mb-0">
+                              <small>
+                                <span className="fw-semi-bold">Country:</span>
+                                <p className="text-muted">{order.country}</p>
+                              </small>
+                            </div>
+                          </td>
 
-                        <td>
-                          <Link to={`/admin/order/${order.index}`}>
-                            {/* eslint-disable-line */}
-                            <Button
-                              color="primary"
-                              className="width-100 mb-xs mr-xs"
-                              onClick={() => this.props.setOrder(order)}
-                            >
-                              Edit
-                            </Button>
-                          </Link>
-                        </td>
-                      </tr>
-                    ))}
+                          <td>
+                            <div className="mb-0">
+                              <small>
+                                <span className="fw-semi-bold">Term:</span>
+                                <p className="text-muted">
+                                  {order.delivery.term}
+                                </p>
+                              </small>
+                            </div>
+                            <div className="mb-0">
+                              <small>
+                                <span className="fw-semi-bold">Variants:</span>
+                                <p className="text-muted">
+                                  {order.delivery.variant}
+                                </p>
+                              </small>
+                            </div>
+                          </td>
+
+                          <td className="text-muted">
+                            {moment(order.auction.start).format('DD.MM.YYYY')}
+                            <br />
+                            {moment(order.auction.start).format('HH:mm')}
+                          </td>
+
+                          <td>{order.requirements}</td>
+
+                          <td>
+                            <div className="mb-0">
+                              <small>
+                                {order.documents.map(doc => (
+                                  <p
+                                    key={doc.filename}
+                                    className="text-muted"
+                                    style={{ margin: 0 }}
+                                  >
+                                    {doc.filename}
+                                  </p>
+                                ))}
+                              </small>
+                            </div>
+                          </td>
+
+                          <td>{order.description}</td>
+
+                          <td>
+                            <Link to={`/admin/order/${order.index}`}>
+                              {/* eslint-disable-line */}
+                              <Button
+                                color="primary"
+                                className="width-100 mb-xs mr-xs"
+                                onClick={() => this.props.setOrder(order)}
+                              >
+                                Edit
+                              </Button>
+                            </Link>
+                          </td>
+                        </tr>
+                      ),
+                    )}
                   </tbody>
                 </Table>
               </div>
