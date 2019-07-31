@@ -612,7 +612,6 @@ class Order extends Component {
                 <br />
 
                 <div>
-                  <p>Product: {order._id}</p>
                   <Button
                     color="danger"
                     className="btn-rounded width-100 mb-xs mr-xs"
